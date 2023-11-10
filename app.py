@@ -5,6 +5,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from decouple import config
 from db import db
 from flask_cors import CORS
+from datetime import timedelta
 
 
 login_manager = LoginManager()
@@ -16,6 +17,7 @@ app = Flask(__name__)
 app.secret_key = config("secret_key", "009e5686fbe6267253fa2c0acfae50f6c4b1e0ae3e12184b101d461f32e49b7e")
 login_manager.init_app(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://postgres:{config('db_password')}@{config('db_host', '3.71.13.232')}:{config('db_port', '5432')}/uzh"
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
 db.init_app(app)
 #TODO fix security issue
 CORS(app)
