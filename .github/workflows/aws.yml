@@ -21,8 +21,7 @@ jobs:
         password: ${{ secrets.SSH_SCRET }}
         port: ${{ secrets.SERVER_PORT }} # опціонально, якщо ви не використовуєте стандартний порт 22
         script: |
-          echo ${{ secrets.SSH_SCRET }} | sudo -S systemctl stop app
           cd /home/uzh/uzh
           git pull uzh-oblik-back main
-          sudo systemctl start app
+          sudo systemctl restart app
           
