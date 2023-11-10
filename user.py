@@ -27,7 +27,7 @@ class DBUserManager:
         self.db = db
 
     def get_by_id(self, id):
-        db_user = self.db.get(DbUser, id)
+        db_user = self.db.get_or_404(DbUser, id)
         return User(db_user)
 
     def create_user(self, username: str, password: str, is_admin: bool):
