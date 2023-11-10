@@ -22,7 +22,7 @@ jobs:
         port: ${{ secrets.SERVER_PORT }} # опціонально, якщо ви не використовуєте стандартний порт 22
         script: |
         
-          cd ~/uzh-oblik-back/
+          cd /home/uzh/uzh
           git pull origin main
           pkill -f "python3 app.py"  
           nohup python3 app.py &
