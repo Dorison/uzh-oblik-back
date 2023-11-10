@@ -66,6 +66,6 @@ def hello():
 
 
 if __name__ == '__main__':
-    create_user("test", "test", "true")
+    user_manager.create_user("test", "test", True)
     app.run(host='0.0.0.0')
 

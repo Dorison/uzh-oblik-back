@@ -30,7 +30,7 @@ class DBUserManager:
         db_user = self.db.get(DbUser, id)
         return User(db_user)
 
-    def create_user(self, username, password, is_admin):
+    def create_user(self, username: str, password: str, is_admin: bool):
         db_user = DbUser(username, hash(password), is_admin)
         self.db.session.add(db_user)
         self.db.session.commit()
