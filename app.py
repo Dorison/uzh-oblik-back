@@ -16,7 +16,7 @@ login_manager.init_app(app)
 def unauthorized():
     abort(HTTPStatus.UNAUTHORIZED)
 
-@app.route('users', methods = ['POST'])
+@app.route('/users', methods = ['POST'])
 def authenticate():
     username = request.json.get('username')
     password = request.json.get('password')
@@ -34,5 +34,5 @@ def hello():
     return "hello World"
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
 
