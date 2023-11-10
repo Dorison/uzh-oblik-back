@@ -24,7 +24,6 @@ jobs:
         
           cd /home/uzh/uzh
           git pull uzh-oblik-back main
-          pkill -f "python3 app.py" &
-          wait
-          nohup python3 app.py &
+          sudo systemctl stop app
+          sudo systemctl start app
           
