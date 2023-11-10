@@ -10,7 +10,7 @@ from flask_cors import CORS
 login_manager = LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
-    return user_manager.get(user_id)
+    return user_manager.get_by_id(user_id)
 
 app = Flask(__name__)
 app.secret_key = config("secret_key", "009e5686fbe6267253fa2c0acfae50f6c4b1e0ae3e12184b101d461f32e49b7e")
@@ -31,7 +31,7 @@ def unauthorized():
 def authenticate():
     username = request.json.get('username')
     password = request.json.get('password')
-    user = user_manager.users_by_id(username)
+    user = user_manager.get_by_id(username)
     if authenticate(user, password):
         abort(HTTPStatus.UNAUTHORIZED)
     else:
