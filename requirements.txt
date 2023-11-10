@@ -1,2 +1,5 @@
 flask 
 flask-login
+flask_sqlalchemy
+sqlalchemy
+python-decouple
