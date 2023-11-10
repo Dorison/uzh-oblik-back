@@ -66,7 +66,9 @@ def hello():
 
 
 if __name__ == '__main__':
-    with app.app_context():
+    """
+    with app.app_context():        
         user_manager.create_user("test", "test", True)
+    """
     app.run(host='0.0.0.0')
 
