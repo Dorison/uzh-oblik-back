@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return 'Hello, World1!'
+    return 'Hello, World12!'
 
 if __name__ == '__main__':
     # Змінено параметри запуску, щоб вказати порт явно
