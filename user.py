@@ -11,6 +11,7 @@ class User:
     is_active: bool
     id: str
     hash: str
+    is_admin: bool
 
     def get_id(self):
         return self.id
@@ -18,7 +19,7 @@ class User:
 
 class DictUserManager:
     def __init__(self):
-        self.users_by_id = {"test": User(False, False, "test", hash("test"))}
+        self.users_by_id = {"test": User(False, False, "test", hash("test"), True)}
 
     def get_by_id(self, id: str):
         return self.users_by_id.get(id)

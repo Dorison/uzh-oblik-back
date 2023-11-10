@@ -1,9 +1,7 @@
-from flask import Flask, request, abort, login_user, login_required, logout_user, current_user
+from flask import Flask, request, abort
 from http import HTTPStatus
 from user import user_manager, authenticate
-
-
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 login_manager = LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
@@ -24,10 +22,22 @@ def authenticate():
     password = request.json.get('password')
     user = user_manager.users_by_id(username)
     if authenticate(user, password):
-        return {'username': username, 'password': password}, HTTPStatus.UNAUTHORIZED
+        abort(HTTPStatus.UNAUTHORIZED)
     else:
         login_user(user, remember=True)
         return {'username': username, 'password': password}, HTTPStatus.FOUND
+
+@app.route("/users", methods=['PUT'])
+@login_required
+def create_user():
+    if not current_user.is_admin:
+        abort(HTTPStatus.UNAUTHORIZED)
+    username = request.json.get('username')
+    password = request.json.get('password')
+    is_admin = request.json.get('is_admin')
+    if username == current_user.get_id():
+        abort(HTTPStatus.UNAUTHORIZED)
+
 
 @app.route("/logout")
 @login_required
@@ -37,7 +47,7 @@ def logout():
 
 @app.route("/authorised")
 @login_required
-def hello():
+def hello_authorised():
     return f"hello {current_user.get_id}"
 
 
