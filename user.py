@@ -47,7 +47,7 @@ class DictUserManager:
         self.users_by_id[username] = User(False, False, username, hash(password), is_admin)
 """
 
-def authenticate(user: User, password)->bool:
+def authenticate_user(user: User, password)->bool:
     return not user is None and user.hash == hash(password)
 
 

@@ -1,6 +1,6 @@
 from flask import Flask, request, abort
 from http import HTTPStatus
-from user import user_manager, authenticate
+from user import user_manager, authenticate_user
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from decouple import config
 from db import db
@@ -32,11 +32,11 @@ def authenticate():
     username = request.json.get('username')
     password = request.json.get('password')
     user = user_manager.get_by_id(username)
-    if authenticate(user, password):
-        abort(HTTPStatus.UNAUTHORIZED)
-    else:
+    if authenticate_user(user, password):
         login_user(user, remember=True)
         return {'username': username, 'password': password}, HTTPStatus.FOUND
+    else:
+        abort(HTTPStatus.UNAUTHORIZED)
 
 @app.route("/users", methods=['PUT'])
 @login_required
