@@ -4,3 +4,4 @@ flask_sqlalchemy
 sqlalchemy
 python-decouple
 psycopg2
+flask-cors

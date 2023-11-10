@@ -4,6 +4,7 @@ from user import user_manager, authenticate
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from decouple import config
 from db import db
+from flask_cors import CORS
 
 
 login_manager = LoginManager()
@@ -16,6 +17,8 @@ app.secret_key = config("secret_key", "009e5686fbe6267253fa2c0acfae50f6c4b1e0ae3
 login_manager.init_app(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://postgres:{config('db_password')}@{config('db_host', '3.71.13.232')}:{config('db_port', '5432')}/uzh"
 db.init_app(app)
+#TODO fix security issue
+CORS(app)
 
 with app.app_context():
     db.create_all()
