@@ -24,6 +24,6 @@ jobs:
         
           cd /home/uzh/uzh
           git pull uzh-oblik-back main
-          pkill -f "python3 app.py"  
+          pkill -f "python3 app.py" &
           nohup python3 app.py &
           
