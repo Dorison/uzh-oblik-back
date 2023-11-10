@@ -14,4 +14,4 @@ db = SQLAlchemy(model_class=Base)
 class DbUser(db.Model):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     hash: Mapped[str] = mapped_column(String)
-    is_admin: Mapped = mapped_column(Boolean)
+    is_admin: Mapped[Boolean] = mapped_column(Boolean)

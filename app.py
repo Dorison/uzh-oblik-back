@@ -14,7 +14,7 @@ def load_user(user_id):
 app = Flask(__name__)
 app.secret_key = config("secret_key", "009e5686fbe6267253fa2c0acfae50f6c4b1e0ae3e12184b101d461f32e49b7e")
 login_manager.init_app(app)
-app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg2://postgres:{config('db_password')}@{config('db_host', '3.71.13.232')}:{config('db_port', '5432')}/uzh"
+app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://postgres:{config('db_password')}@{config('db_host', '3.71.13.232')}:{config('db_port', '5432')}/uzh"
 db.init_app(app)
 
 with app.app_context():
@@ -66,6 +66,7 @@ def hello():
 
 
 if __name__ == '__main__':
-    user_manager.create_user("test", "test", True)
+    with app.app_context():
+        user_manager.create_user("test", "test", True)
     app.run(host='0.0.0.0')
 

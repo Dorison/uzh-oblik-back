@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from db import DbUser
+from db import DbUser, db
 def hash(password):
     # TODO security
     return password
@@ -31,7 +31,7 @@ class DBUserManager:
         return User(db_user)
 
     def create_user(self, username: str, password: str, is_admin: bool):
-        db_user = DbUser(username, hash(password), is_admin)
+        db_user = DbUser(id=username, hash=hash(password), is_admin=is_admin)
         self.db.session.add(db_user)
         self.db.session.commit()
 
@@ -51,4 +51,4 @@ def authenticate(user: User, password)->bool:
     return not user is None and user.hash == hash(password)
 
 
-user_manager = DBUserManager()
+user_manager = DBUserManager(db)
