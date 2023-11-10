@@ -21,5 +21,9 @@ jobs:
         password: ${{ secrets.SSH_SCRET }}
         port: ${{ secrets.SERVER_PORT }} # опціонально, якщо ви не використовуєте стандартний порт 22
         script: |
-          cd ~/flask-app/
+        
+          cd ~/uzh-oblik-back/
           git pull origin main
+          pkill -f "python3 app.py"  
+          nohup python3 app.py &
+          
