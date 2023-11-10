@@ -22,6 +22,7 @@ jobs:
         port: ${{ secrets.SERVER_PORT }} # опціонально, якщо ви не використовуєте стандартний порт 22
         script: |
           cd /home/uzh/uzh
+          git clean -fdx
           git pull uzh-oblik-back main
           docker build -t flask-app .  
           docker stop flask-app || true
