@@ -1,1 +1,1 @@
-pip install flask-login
+flask flask-login
