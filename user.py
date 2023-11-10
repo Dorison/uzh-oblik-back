@@ -18,7 +18,7 @@ class User:
 
 class DictUserManager:
     def __init__(self):
-        self.users_by_id = {}
+        self.users_by_id = {"test": User(False, False, "test", hash("test"))}
 
     def get_by_id(self, id: str):
         return self.users_by_id.get(id)
