@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 from http import HTTPStatus
 from user import user_manager, authenticate_user
+from serviceman import serviceman_manager
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from decouple import config
 from db import db
@@ -53,6 +54,13 @@ def create_user():
     user_manager.create_user(username, password, is_admin)
     return {'username': username, 'password': password, "is_admin": is_admin}, HTTPStatus.CREATED
 
+@app.route("/serviceman", methods=['PUT'])
+#@login_required
+def create_serviceman():
+    name = request.json.get('name')
+    surname = request.json.get('surname')
+    patronymic = request.json.get("patronymic")
+    serviceman_manager.create_service_man(name, surname, patronymic)
 @app.route("/logout")
 @login_required
 def logout():
