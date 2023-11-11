@@ -18,13 +18,16 @@ class DbUser(db.Model):
     hash: Mapped[str] = mapped_column(String)
     is_admin: Mapped[Boolean] = mapped_column(Boolean)
 
-
+@dataclass
 class Item(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
     returnable: Mapped[bool] = mapped_column(Boolean)
     #TODO something reasonble Timedelta
     term: Mapped[float] = mapped_column(Float)
+
+    def to_dict(self):
+        return asdict(self)
 
 
 @dataclass
@@ -38,12 +41,12 @@ class Serviceman(db.Model):
     def to_dict(self):
         return asdict(self)
 
+
 class Issue(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(Integer, ForeignKey(Item.id))
     item = relationship(Item)
     serviceman_id = Column(Integer, ForeignKey(Serviceman.id))
-    serviceman = relationship(Serviceman)
     size: Mapped[str] = mapped_column(String)
 
 
