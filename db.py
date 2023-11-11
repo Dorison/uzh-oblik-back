@@ -38,9 +38,12 @@ class Serviceman(db.Model):
     issues = relationship("Issue", backref="serviceman")
 
     def to_dict(self):
-        return asdict(self)
+        d = asdict(self)
+        d["issues"] = [issue.to_dict() for issue in self.issues]
+        return d
 
 
+@dataclass()
 class Issue(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(Integer, ForeignKey(Item.id))
@@ -52,5 +55,8 @@ class Issue(db.Model):
 
 
     def to_dict(self):
-        return asdict(self)
+        d = asdict(self)
+        d["item"] = self.item.to_dict()
+        return d
+
 

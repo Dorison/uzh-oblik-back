@@ -19,7 +19,7 @@ class ServicemanManager:
     def get_all(self)->List[Serviceman]:
         return db.session.execute(db.select(Serviceman).order_by(Serviceman.surname)).scalars()
 
-    def issue_item(self, servicemen: Serviceman, item: Item, size: str, date)->int:
+    def issue_item(self, servicemen: Serviceman, item: Item, size: str, date) -> int:
         issue = Issue(item=item, term=item.term, size=size, date=date)
         servicemen.issues.append(issue)
         self.db.session.add(issue)
