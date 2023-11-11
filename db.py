@@ -1,7 +1,7 @@
-from datetime import date
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import String, Boolean, Integer, Date, Column, ForeignKey
+from sqlalchemy import String, Boolean, Integer, DateTime, Column, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from dataclasses import dataclass, asdict
 
@@ -48,7 +48,7 @@ class Issue(db.Model):
     serviceman_id = Column(Integer, ForeignKey(Serviceman.id))
     size: Mapped[str] = mapped_column(String)
     term: Mapped[int] = mapped_column(Integer)
-    date: Mapped[date] = mapped_column(Date)
+    date: Mapped[datetime] = mapped_column(DateTime)
 
 
     def to_dict(self):
