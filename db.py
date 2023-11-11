@@ -39,6 +39,7 @@ class Serviceman(db.Model):
         return asdict(self)
 
 class Issue(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(Integer, ForeignKey(Item.id))
     item = relationship(Item)
     serviceman_id = Column(Integer, ForeignKey(Serviceman.id))
