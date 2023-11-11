@@ -96,7 +96,7 @@ def get_items():
     return [item.to_dict() for item in item_manager.get_all()]
 
 
-@app.route("serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
+@app.route("/serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
 def issue_item(serviceman_id, item_id):
     date = request.json.get('date')
     size = request.json.get("size")
