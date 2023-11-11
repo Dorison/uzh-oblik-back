@@ -50,13 +50,14 @@ class Issue(db.Model):
     item = relationship(Item)
     serviceman_id = Column(Integer, ForeignKey(Serviceman.id))
     size: Mapped[str] = mapped_column(String)
-    term: Mapped[int] = mapped_column(Integer)
+    expire: Mapped[datetime] = mapped_column(DateTime)
     date: Mapped[datetime] = mapped_column(DateTime)
-
 
     def to_dict(self):
         d = asdict(self)
+        d["date"] = d.get("date").strftime("%d.%m.%Y")
         d["item"] = self.item.to_dict()
+        d["expire"] = d.get("expire").strftime("%d.%m.%Y")
         return d
 
 
