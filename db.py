@@ -38,7 +38,7 @@ class Serviceman(db.Model):
     def to_dict(self):
         return asdict(self)
 
-class Issue:
+class Issue(db.Model):
     item_id = Column(Integer, ForeignKey(Item.id))
     item = relationship(Item)
     serviceman_id = Column(Integer, ForeignKey(Serviceman.id))
