@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 from http import HTTPStatus
 from user import user_manager, authenticate_user
+from item import item_manager
 from serviceman import serviceman_manager
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from decouple import config
@@ -70,9 +71,29 @@ def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
 
+
 @app.route("/serviceman", methods=['get'])
 def get_servicemen():
     return [serviceman.to_dict() for serviceman in serviceman_manager.get_all()]
+
+
+
+@app.route("/item", methods=['PUT'])
+def create_item():
+    name = request.json.get('name')
+    returnable = bool(request.json.get('returnable'))
+    term = float(request.json.get('term'))
+    id = item_manager.create_item(name, returnable, term)
+    return {"id": id}, HTTPStatus.CREATED
+
+@app.route("/item/<id>", methods=['get'])
+def get_item(id):
+    item = item_manager.get_by_id(id)
+    return item.to_dict()
+
+@app.route("/item", methods=['get'])
+def get_items():
+    return [item.to_dict() for item in item_manager.get_all()]
 
 
 

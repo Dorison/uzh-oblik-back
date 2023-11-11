@@ -17,7 +17,7 @@ class ServicemanManager:
 
 
     def get_all(self)->List[Serviceman]:
-        return db.session.execute(db.select(Serviceman).order_by.surname).scalars()
+        return db.session.execute(db.select(Serviceman).order_by(Serviceman.surname)).scalars()
 
 
 
