@@ -45,6 +45,7 @@ class Issue:
     serviceman = relationship(Serviceman)
     size: Mapped[str] = mapped_column(String)
 
+
     def to_dict(self):
         return asdict(self)
 

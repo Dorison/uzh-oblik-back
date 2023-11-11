@@ -17,7 +17,7 @@ class ItemManager:
         return self.db.get_or_404(Item, id)
 
     def get_all(self)->List[Item]:
-        return self.db.session.execute(db.select(List).order_by(Item.name)).scalars()
+        return self.db.session.execute(db.select(Item).order_by(Item.name)).scalars()
 
 
 item_manager = ItemManager(db)
