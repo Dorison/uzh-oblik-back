@@ -105,6 +105,13 @@ def issue_item(serviceman_id, item_id):
     id = serviceman_manager.issue_item(serviceman, item, size, date)
     return {"id": id}, HTTPStatus.CREATED
 
+@app.route("/expires", methods=['GET'])
+def expires():
+    from_date = request.args.get("from")
+    term = request.args.get("term")
+    return [issue.to_dict() for issue in item_manager.get_expires(from_date, term)]
+
+
 
 
 

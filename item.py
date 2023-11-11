@@ -1,4 +1,6 @@
-from db import Item, db
+import datetime
+
+from db import Item, db, Issue
 from typing import List
 
 
@@ -18,6 +20,11 @@ class ItemManager:
 
     def get_all(self)->List[Item]:
         return self.db.session.execute(db.select(Item).order_by(Item.name)).scalars()
+
+    def get_expires(self, from_date , term:int):
+        to_date = from_date + datetime.timedelta(term)
+        return self.db.session.execute(db.select(Issue).filter(Issue.expire > from_date).filter(Issue.expire < to_date)
+                                       .order_by(Issue.expire)).scalars()
 
 
 item_manager = ItemManager(db)
