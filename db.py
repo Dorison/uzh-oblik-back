@@ -48,6 +48,7 @@ class Issue(db.Model):
     item = relationship(Item)
     serviceman_id = Column(Integer, ForeignKey(Serviceman.id))
     size: Mapped[str] = mapped_column(String)
+    term: Mapped[int] = mapped_column(Integer)
 
 
     def to_dict(self):

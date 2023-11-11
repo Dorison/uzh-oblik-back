@@ -96,6 +96,17 @@ def get_items():
     return [item.to_dict() for item in item_manager.get_all()]
 
 
+@app.route("serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
+def issue_item(serviceman_id, item_id):
+    date = request.json.get('date')
+    size = request.json.get("size")
+    serviceman = serviceman_manager.get_by_id(serviceman_id)
+    item = item_manager.get_by_id(item_id)
+    id = serviceman_manager.issue_item(serviceman, item, size, date)
+    return {"id": id}, HTTPStatus.CREATED
+
+
+
 
 @app.route("/logout")
 @login_required
