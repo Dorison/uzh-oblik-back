@@ -20,7 +20,7 @@ class ServicemanManager:
         return db.session.execute(db.select(Serviceman).order_by(Serviceman.surname)).scalars()
 
     def issue_item(self, servicemen: Serviceman, item: Item, size: str, date)->int:
-        issue = Issue(item=item, term=item.term, servicemen_id=servicemen.id, size=size)
+        issue = Issue(item=item, term=item.term, size=size)
         servicemen.issues.add(issue)
         self.db.session.add(issue)
         self.db.session.commit()

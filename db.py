@@ -1,8 +1,7 @@
-import dataclasses
-
+from datetime import date
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import String, Boolean, Integer, Float, Column, ForeignKey
+from sqlalchemy import String, Boolean, Integer, Date, Column, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from dataclasses import dataclass, asdict
 
@@ -24,7 +23,7 @@ class Item(db.Model):
     name: Mapped[str] = mapped_column(String)
     returnable: Mapped[bool] = mapped_column(Boolean)
     #TODO something reasonble Timedelta
-    term: Mapped[float] = mapped_column(Float)
+    term: Mapped[int] = mapped_column(Integer)
 
     def to_dict(self):
         return asdict(self)
@@ -49,6 +48,7 @@ class Issue(db.Model):
     serviceman_id = Column(Integer, ForeignKey(Serviceman.id))
     size: Mapped[str] = mapped_column(String)
     term: Mapped[int] = mapped_column(Integer)
+    date: Mapped[date] = mapped_column(Date)
 
 
     def to_dict(self):

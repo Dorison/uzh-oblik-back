@@ -7,7 +7,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from decouple import config
 from db import db
 from flask_cors import CORS
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 login_manager = LoginManager()
@@ -98,7 +98,7 @@ def get_items():
 
 @app.route("/serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
 def issue_item(serviceman_id, item_id):
-    date = request.json.get('date')
+    date = datetime.strptime(request.json.get('date'), "%d.%m.%Y")
     size = request.json.get("size")
     serviceman = serviceman_manager.get_by_id(serviceman_id)
     item = item_manager.get_by_id(item_id)
