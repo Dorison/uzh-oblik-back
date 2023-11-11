@@ -98,7 +98,7 @@ def get_items():
 
 @app.route("/serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
 def issue_item(serviceman_id, item_id):
-    date = datetime.strptime(request.json.get('date'), "%d.%m.%Y")
+    date = datetime.strptime(request.json.get('date'), "%Y-%m-%d")
     size = request.json.get("size")
     serviceman = serviceman_manager.get_by_id(serviceman_id)
     item = item_manager.get_by_id(item_id)
