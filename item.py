@@ -7,7 +7,7 @@ class ItemManager:
     def __init__(self, db):
         self.db = db
 
-    def create_item(self, name: str, returnable: bool, term: float):
+    def create_item(self, name: str, returnable: bool, term: int):
         item = Item(name=name, returnable=returnable, term=term)
         self.db.session.add(item)
         self.db.session.commit()
@@ -17,7 +17,7 @@ class ItemManager:
         return self.db.get_or_404(Item, id)
 
     def get_all(self)->List[Item]:
-        return self.db.session.execute(db.select(List).order_by.surname).scalars()
+        return self.db.session.execute(db.select(List).order_by(Item.name)).scalars()
 
 
 item_manager = ItemManager(db)

@@ -82,7 +82,7 @@ def get_servicemen():
 def create_item():
     name = request.json.get('name')
     returnable = bool(request.json.get('returnable'))
-    term = float(request.json.get('term'))
+    term = int(request.json.get('term')) # days
     id = item_manager.create_item(name, returnable, term)
     return {"id": id}, HTTPStatus.CREATED
 
