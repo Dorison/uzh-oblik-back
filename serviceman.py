@@ -1,4 +1,5 @@
 from db import db, Serviceman
+from typing import List
 
 
 class ServicemanManager:
@@ -11,8 +12,15 @@ class ServicemanManager:
         self.db.session.commit()
         return serviceman.id
 
-    def get_by_id(self, id):
+    def get_by_id(self, id)-> Serviceman:
         return self.db.get_or_404(Serviceman, id)
+
+
+    def get_all(self)->List[Serviceman]:
+        return db.session.execute(db.select(Serviceman).order_by.surname).scalars()
+
+
+
 
 
 

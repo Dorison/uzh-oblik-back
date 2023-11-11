@@ -54,6 +54,7 @@ def create_user():
     user_manager.create_user(username, password, is_admin)
     return {'username': username, 'password': password, "is_admin": is_admin}, HTTPStatus.CREATED
 
+
 @app.route("/serviceman", methods=['PUT'])
 #@login_required
 def create_serviceman():
@@ -68,6 +69,11 @@ def create_serviceman():
 def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
+
+@app.route("/serviceman", methods=['get'])
+def get_servicemen():
+    return [serviceman.to_dict() for serviceman in serviceman_manager.get_all()]
+
 
 
 @app.route("/logout")
