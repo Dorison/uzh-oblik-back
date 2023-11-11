@@ -1,8 +1,10 @@
+import dataclasses
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import String, Boolean, Integer, Float
 from sqlalchemy.orm import Mapped, mapped_column
-
+from dataclasses import dataclass, asdict
 
 class Base(DeclarativeBase):
   pass
@@ -24,8 +26,13 @@ class Item(db.Model):
     #TODO something reasonble Timedelta
     term: Mapped[float] = mapped_column(Float)
 
+@dataclass
 class Serviceman(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
     surname: Mapped[str] = mapped_column(String)
     patronymic: Mapped[str] = mapped_column(String)
+
+    def to_dict(self):
+        return asdict(self)
+

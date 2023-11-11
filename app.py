@@ -60,7 +60,16 @@ def create_serviceman():
     name = request.json.get('name')
     surname = request.json.get('surname')
     patronymic = request.json.get("patronymic")
-    serviceman_manager.create_service_man(name, surname, patronymic)
+    id = serviceman_manager.create_service_man(name, surname, patronymic)
+    return {'id': id}, HTTPStatus.CREATED
+
+
+@app.route("/serviceman/<id>", methods=['get'])
+def get_serviceman(id):
+    serviceman = serviceman_manager.get_by_id(id)
+    return serviceman.to_dict()
+
+
 @app.route("/logout")
 @login_required
 def logout():
