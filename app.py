@@ -107,8 +107,8 @@ def issue_item(serviceman_id, item_id):
 
 @app.route("/expires", methods=['GET'])
 def expires():
-    from_date = request.args.get("from")
-    term = request.args.get("term")
+    from_date = datetime.strptime(request.args.get("from"), "%Y-%m-%d")
+    term = int(request.args.get("term"))
     return [issue.to_dict() for issue in item_manager.get_expires(from_date, term)]
 
 
