@@ -8,10 +8,10 @@ from dataclasses import dataclass, asdict
 class Base(DeclarativeBase):
   pass
 
-
 db = SQLAlchemy(model_class=Base)
-
-
+ranks = ["Головний майстер-сержант",	"Старший майстер-сержант",	"Майстер-сержант",	"Штаб-сержант",	"Головний сержант",	"Старший сержант",	"Сержант",	"Молодший сержант",	"Старший солдат",	"Солдат",	"Рекрут"]
+officer_ranks = ["Генерал", 	"Генерал-лейтенант",	"Генерал-майор",	"Бригадний генерал", 	"Полковник", 	"Підполковник", 	"Майор",	"Капітан", 	"Старший лейтенант",	"Лейтенант",	"Молодший лейтенант",	"Курсант"]
+sex = ["Чоловік", "Жінка"]
 class DbUser(db.Model):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     hash: Mapped[str] = mapped_column(String)

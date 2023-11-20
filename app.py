@@ -112,6 +112,13 @@ def expires():
     return [issue.to_dict() for issue in item_manager.get_expires(from_date, term)]
 
 
+@app.route("/norm", methods=['PUT'])
+def create_norm():
+    sexes = request.json.get("sexes")
+    print("sexes: ", sexes)
+    ranks = request.json.get("ranks")
+    print("ranks: ", ranks)
+
 
 
 
