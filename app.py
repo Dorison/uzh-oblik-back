@@ -82,8 +82,8 @@ def get_servicemen():
 def create_item():
     name = request.json.get('name')
     returnable = bool(request.json.get('returnable'))
-    term = int(request.json.get('term')) # days
-    id = item_manager.create_item(name, returnable, term)
+    #term = int(request.json.get('term')) # days
+    id = item_manager.create_item(name, returnable, 0)
     return {"id": id}, HTTPStatus.CREATED
 
 @app.route("/item/<id>", methods=['get'])
@@ -118,6 +118,29 @@ def create_norm():
     print("sexes: ", sexes)
     ranks = request.json.get("ranks")
     print("ranks: ", ranks)
+    groups = request.json.get("groups")
+    print("groups: ", groups)
+    from_date = request.json.get("from")
+    to_date = request.json.get("to")
+    print("from ", from_date, "to", to_date)
+    id = 42
+    return {"id": id}
+
+@app.route("/group", methods=['PUT'])
+def create_norm_group():
+    return {"id": 42}
+
+@app.route("group", methods = ['GET'])
+def get_group():
+    request.args.get("id")
+    return [{"item_id": 1, "term": 365, "quantity":1}]
+
+@app.route("/group/<group_id>/item", methods=['PUT'])
+def add_item(group_id):
+    item_id = request.json.get("item_id")
+    term = request.json.get("term")
+    quantity = request.json.get("quantity")
+    return {id: 42}
 
 
 
