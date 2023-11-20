@@ -111,6 +111,10 @@ def expires():
     term = int(request.args.get("term"))
     return [issue.to_dict() for issue in item_manager.get_expires(from_date, term)]
 
+@app.route("/norm/draft", methods=['PUT'])
+def create_draft():
+    return {"draft_id": id}
+
 
 @app.route("/norm", methods=['PUT'])
 def create_norm():
@@ -124,11 +128,11 @@ def create_norm():
     to_date = request.json.get("to")
     print("from ", from_date, "to", to_date)
     id = 42
-    return {"id": id}
+    return {"id": id}, HTTPStatus.CREATED
 
 @app.route("/group", methods=['PUT'])
 def create_norm_group():
-    return {"id": 42}
+    return {"id": 42}, HTTPStatus.CREATED
 
 @app.route("/group", methods = ['GET'])
 def get_group():
