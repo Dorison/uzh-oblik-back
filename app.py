@@ -130,7 +130,7 @@ def create_norm():
 def create_norm_group():
     return {"id": 42}
 
-@app.route("group", methods = ['GET'])
+@app.route("/group", methods = ['GET'])
 def get_group():
     request.args.get("id")
     return [{"item_id": 1, "term": 365, "quantity":1}]
