@@ -78,7 +78,7 @@ def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
 
-@app.route("serviceman/<id>/obligation")
+@app.route("/serviceman/<id>/obligation")
 def get_serviceman_obligations(id):
     serviceman = serviceman_manager.get_by_id(id)
     norms = norm_manager.get_potential_norms(serviceman)
@@ -206,7 +206,7 @@ def test():
 
 
 if __name__ == '__main__':
-    is_test = config("test", False)
+    is_test = config("test", False, cast=bool)
     if is_test:
         test()
     else:
