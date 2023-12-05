@@ -2,18 +2,20 @@ from flask import Flask, request, abort
 from http import HTTPStatus
 from user import user_manager, authenticate_user
 from item import item_manager
+from  norm import norm_manager, ObligationDto
 from serviceman import serviceman_manager
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from decouple import config
-from db import db
+from db import db, Gender
 from flask_cors import CORS
 from datetime import timedelta, datetime
 
-
+datetime_format = "%d.%m.%Y %H:%M:%S"
 login_manager = LoginManager()
 @login_manager.user_loader
 def load_user(user_id):
     return user_manager.get_by_id(user_id)
+
 
 app = Flask(__name__)
 app.secret_key = config("secret_key", "009e5686fbe6267253fa2c0acfae50f6c4b1e0ae3e12184b101d461f32e49b7e")
@@ -31,7 +33,8 @@ with app.app_context():
 def unauthorized():
     abort(HTTPStatus.UNAUTHORIZED)
 
-@app.route('/users', methods = ['POST'])
+
+@app.route('/users', methods=['POST'])
 def authenticate():
     username = request.json.get('username')
     password = request.json.get('password')
@@ -41,6 +44,7 @@ def authenticate():
         return {'username': username, 'password': password}, HTTPStatus.FOUND
     else:
         abort(HTTPStatus.UNAUTHORIZED)
+
 
 @app.route("/users", methods=['PUT'])
 @login_required
@@ -57,12 +61,15 @@ def create_user():
 
 
 @app.route("/serviceman", methods=['PUT'])
-#@login_required
+# @login_required
 def create_serviceman():
     name = request.json.get('name')
     surname = request.json.get('surname')
     patronymic = request.json.get("patronymic")
-    id = serviceman_manager.create_service_man(name, surname, patronymic)
+    sex = bool(request.json.get('sex'))
+    rank = int(request.json.get('rank'))
+    group = str(request.json.get('group'))
+    id = serviceman_manager.create_service_man(name, surname, patronymic, sex, rank, group)
     return {'id': id}, HTTPStatus.CREATED
 
 
@@ -71,11 +78,17 @@ def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
 
+@app.route("serviceman/<id>/obligation")
+def get_serviceman_obligations(id):
+    serviceman = serviceman_manager.get_by_id(id)
+    norms = norm_manager.get_potential_norms(serviceman)
+    obligations = norm_manager.get_obligations(serviceman, norms)
+    result = [obligation.to_dict() for item_obligations in obligations.values() for obligation in item_obligations]
+    return result
 
 @app.route("/serviceman", methods=['get'])
 def get_servicemen():
     return [serviceman.to_dict() for serviceman in serviceman_manager.get_all()]
-
 
 
 @app.route("/item", methods=['PUT'])
@@ -86,10 +99,12 @@ def create_item():
     id = item_manager.create_item(name, returnable, 0)
     return {"id": id}, HTTPStatus.CREATED
 
+
 @app.route("/item/<id>", methods=['get'])
 def get_item(id):
     item = item_manager.get_by_id(id)
     return item.to_dict()
+
 
 @app.route("/item", methods=['get'])
 def get_items():
@@ -98,56 +113,64 @@ def get_items():
 
 @app.route("/serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
 def issue_item(serviceman_id, item_id):
-    date = datetime.strptime(request.json.get('date'), "%Y-%m-%d")
+    date = datetime.strptime(request.json.get('date'), "%d.%m.%Y %H:%M:%S")
     size = request.json.get("size")
     serviceman = serviceman_manager.get_by_id(serviceman_id)
     item = item_manager.get_by_id(item_id)
-    id = serviceman_manager.issue_item(serviceman, item, size, date)
+    granted = datetime.now()
+    id = serviceman_manager.issue_item(serviceman, item, size, date, granted)
     return {"id": id}, HTTPStatus.CREATED
 
-@app.route("/expires", methods=['GET'])
-def expires():
-    from_date = datetime.strptime(request.args.get("from"), "%Y-%m-%d")
-    term = int(request.args.get("term"))
-    return [issue.to_dict() for issue in item_manager.get_expires(from_date, term)]
 
+@app.route("/requirements", methods=['GET'])
+def requirements():
+    to_date = datetime.strptime(request.args.get("to"), "%Y-%m-%d")
+    staff = serviceman_manager.get_all()
+    norms = list(norm_manager.get_all())
+    obligations = [norm_manager.get_obligations(serviceman, norms, to_date) for serviceman in staff]
+    return item_manager.get_requirements(obligations)
+
+
+"""
 @app.route("/norm/draft", methods=['PUT'])
 def create_draft():
-    return {"draft_id": id}
+    return {"draft_id": 42}
+"""
 
 
 @app.route("/norm", methods=['PUT'])
 def create_norm():
-    sexes = request.json.get("sexes")
-    print("sexes: ", sexes)
-    ranks = request.json.get("ranks")
-    print("ranks: ", ranks)
-    groups = request.json.get("groups")
-    print("groups: ", groups)
+    genders = request.json.get("genders")
+    from_rank = request.json.get("from_rank")
+    to_rank = request.json.get("to_rank")
+    name = request.json.get("name")
+    reason = request.json.get("reason")
     from_date = request.json.get("from")
     to_date = request.json.get("to")
-    print("from ", from_date, "to", to_date)
-    id = 42
+    id = norm_manager.create_norm(genders, from_rank, to_rank, name, reason, from_date, to_date)
     return {"id": id}, HTTPStatus.CREATED
 
-@app.route("/group", methods=['PUT'])
-def create_norm_group():
-    return {"id": 42}, HTTPStatus.CREATED
 
-@app.route("/group", methods = ['GET'])
-def get_group():
-    request.args.get("id")
-    return [{"item_id": 1, "term": 365, "quantity":1}]
+@app.route("/norm/<norm_id>/group", methods=['PUT'])
+def create_norm_group(norm_id):
+    name = request.json.get("name")
+    obligations = [ObligationDto(jobligation["item_id"], jobligation["count"], jobligation["term"]) for jobligation in request.json.get("items")]
+    norm_manager.add_group(norm_id, name, obligations)
+    return {}, HTTPStatus.CREATED
 
+
+@app.route("/norm/<norm_id>", methods=['GET'])
+def get_norm(norm_id):
+    return norm_manager.get_norm(norm_id)
+
+"""
 @app.route("/group/<group_id>/item", methods=['PUT'])
 def add_item(group_id):
     item_id = request.json.get("item_id")
     term = request.json.get("term")
     quantity = request.json.get("quantity")
     return {id: 42}
-
-
-
+"""
 
 @app.route("/logout")
 @login_required
@@ -165,10 +188,26 @@ def hello_authorised():
 def hello():
     return "hello CI/CD!"
 
+def test():
+    with app.app_context():
+        # user_manager.create_user("test", "test", True)
+        kozak_id = serviceman_manager.create_service_man("Козак", "Андрій", "Володимирович", True, 13, "друга група")
+        from datetime import datetime
+        norm_id = norm_manager.create_norm([False, True], 10, 13, "польова форма", "наказ 66 від 19 ДБЯ",
+                                           datetime.strptime("2023-11-28", "%Y-%m-%d"), None)
+        t_shirt_id = item_manager.create_item("Фуфайка", False)
+        t_shirt = item_manager.get_by_id(t_shirt_id)
+        norm_manager.add_group(norm_id, "друга група", [ObligationDto(t_shirt_id, 365, 2)])
+        kozak = serviceman_manager.get_by_id(kozak_id)
+        norms = list(norm_manager.get_potential_norms(kozak))
+        issue_date = norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d"))[t_shirt_id][0].date
+        serviceman_manager.issue_item(kozak, t_shirt, "XXL", issue_date, datetime.now(), 1)
+        print(norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d")))
+
 
 if __name__ == '__main__':
-    """
-    with app.app_context():        
-        user_manager.create_user("test", "test", True)
-    """
-    app.run(host='0.0.0.0')
+    is_test = config("test", False)
+    if is_test:
+        test()
+    else:
+        app.run(host='0.0.0.0')
