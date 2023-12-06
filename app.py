@@ -195,8 +195,8 @@ def hello():
 
 
 @app.route("/ranks", methods=['GET'])
-def ranks():
-    return ranks[::-1]+officer_ranks[::-1]
+def all_ranks():
+    return list(ranks[::-1]+officer_ranks[::-1])
 
 
 def test():

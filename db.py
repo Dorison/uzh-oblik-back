@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import String, Boolean, Integer, DateTime, Column, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, attribute_keyed_dict
 from dataclasses import dataclass, asdict
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -68,6 +68,9 @@ class Serviceman(db.Model):
     rank_history: Mapped[list[datetime]] = mapped_column(ARRAY(DateTime)) # Array of date, rank starts. None if not started
     gender: Mapped[Gender] = mapped_column(DBGender)
     group: Mapped[str] = mapped_column(String)
+    sizes: Mapped[dict[int, 'size']] = relationship(
+        collection_class=attribute_keyed_dict("item_id"),
+    )
 
     def get_ranks(self):
         ranks = []
@@ -91,6 +94,7 @@ class Size(db.Model):
     item_id = Column(Integer, ForeignKey(Item.id))
     item = relationship(Item)
     size: Mapped[str] = mapped_column(String)
+    serviceman_id = mapped_column(Integer, ForeignKey(Serviceman.id))
 
 @dataclass()
 class Issue(db.Model):
