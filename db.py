@@ -87,9 +87,10 @@ class Serviceman(db.Model):
 
 @dataclass()
 class Size(db.Model):
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(Integer, ForeignKey(Item.id))
     item = relationship(Item)
-    size
+    size: Mapped[str] = mapped_column(String)
 
 @dataclass()
 class Issue(db.Model):
