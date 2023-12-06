@@ -6,7 +6,7 @@ from  norm import norm_manager, ObligationDto
 from serviceman import serviceman_manager
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from decouple import config
-from db import db, Gender
+from db import db, ranks, officer_ranks
 from flask_cors import CORS
 from datetime import timedelta, datetime
 
@@ -159,6 +159,10 @@ def create_norm_group(norm_id):
     return {}, HTTPStatus.CREATED
 
 
+@app.route("/norm", methods=['GET'])
+def get_all_norms():
+    return norm_manager.get_all()
+
 @app.route("/norm/<norm_id>", methods=['GET'])
 def get_norm(norm_id):
     return norm_manager.get_norm(norm_id)
@@ -171,6 +175,7 @@ def add_item(group_id):
     quantity = request.json.get("quantity")
     return {id: 42}
 """
+
 
 @app.route("/logout")
 @login_required
@@ -187,6 +192,12 @@ def hello_authorised():
 @app.route("/hello")
 def hello():
     return "hello CI/CD!"
+
+
+@app.route("/ranks", methods=['GET'])
+def ranks():
+    return ranks[::-1]+officer_ranks[::-1]
+
 
 def test():
     with app.app_context():

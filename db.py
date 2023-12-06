@@ -86,6 +86,12 @@ class Serviceman(db.Model):
 
 
 @dataclass()
+class Size(db.Model):
+    item_id = Column(Integer, ForeignKey(Item.id))
+    item = relationship(Item)
+    size
+
+@dataclass()
 class Issue(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     item_id = Column(Integer, ForeignKey(Item.id))

@@ -19,7 +19,7 @@ class ServicemanManager:
     def get_by_id(self, serviceman_id) -> Serviceman:
         return self.db.get_or_404(Serviceman, serviceman_id)
 
-    def get_all(self)->List[Serviceman]:
+    def get_all(self) -> List[Serviceman]:
         return self.db.session.execute(db.select(Serviceman).order_by(Serviceman.surname)).scalars()
 
     def issue_item(self, servicemen: Serviceman, item: Item, size: str, date:datetime, granted:datetime, count: int) -> int:
