@@ -200,6 +200,9 @@ def hello():
 def all_ranks():
     return list(ranks[::-1]+officer_ranks[::-1])
 
+@app.route("groups", method=['GET'])
+def all_groups():
+    return norm_manager.get_groups()
 
 def test():
     with app.app_context():

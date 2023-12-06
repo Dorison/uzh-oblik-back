@@ -27,12 +27,15 @@ class NormManager:
             self.db.session.add(Obligation(norm_id=norm_id, group=name, item_id=obligation.item_id, count=obligation.count, term=obligation.term))
         self.db.session.commit()
 
+    def get_groups(self):
+        query = self.db.select(Obligation.group).distinct()
+        return self.db.session.execute(query).scalars()
     def get_norm(self, norm_id):
         return db.get_or_404(Norm, norm_id)
 
     def get_all(self):
-        querry = self.db.select(Norm)
-        return db.session.execute(querry).scalars()
+        query = self.db.select(Norm)
+        return db.session.execute(query).scalars()
 
     def get_potential_norms(self, serviceman: Serviceman):
         gender = serviceman.gender
@@ -47,8 +50,8 @@ class NormManager:
              
              Norm.to_date == None or 
          """
-        querry = self.db.select(Norm).filter(Norm.genders.contains([gender]), Norm.from_rank <= ranks[-1], Norm.to_rank >= ranks[0], or_(Norm.to_date == None,Norm.to_date > service_date)).order_by(Norm.from_date)
-        return db.session.execute(querry).scalars()
+        query = self.db.select(Norm).filter(Norm.genders.contains([gender]), Norm.from_rank <= ranks[-1], Norm.to_rank >= ranks[0], or_(Norm.to_date == None,Norm.to_date > service_date)).order_by(Norm.from_date)
+        return db.session.execute(query).scalars()
 
     @staticmethod
     def get_obligations(serviceman: Serviceman, norms: List[Norm], end_date: datetime) -> Dict[int, List[ServicemanObligation]]:
