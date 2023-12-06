@@ -158,14 +158,16 @@ def create_norm_group(norm_id):
     norm_manager.add_group(norm_id, name, obligations)
     return {}, HTTPStatus.CREATED
 
+
 # отримати всі норми
 @app.route("/norm", methods=['GET'])
 def get_all_norms():
-    return norm_manager.get_all()
+    return [norm.to_dict() for norm in norm_manager.get_all()]
+
 
 @app.route("/norm/<norm_id>", methods=['GET'])
 def get_norm(norm_id):
-    return norm_manager.get_norm(norm_id)
+    return norm_manager.get_norm(norm_id).to_dict()
 
 """
 @app.route("/group/<group_id>/item", methods=['PUT'])

@@ -47,6 +47,9 @@ class Norm(db.Model):
     from_date: Mapped[datetime] = mapped_column(DateTime)
     to_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
+    def to_dict(self):
+        return asdict(self)
+
 
 class Obligation(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -68,7 +71,7 @@ class Serviceman(db.Model):
     rank_history: Mapped[list[datetime]] = mapped_column(ARRAY(DateTime)) # Array of date, rank starts. None if not started
     gender: Mapped[Gender] = mapped_column(DBGender)
     group: Mapped[str] = mapped_column(String)
-    sizes: Mapped[dict[int, 'size']] = relationship(
+    sizes: Mapped[dict[int, 'Size']] = relationship(
         collection_class=attribute_keyed_dict("item_id"),
     )
 
