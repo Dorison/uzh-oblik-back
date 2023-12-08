@@ -137,3 +137,6 @@ class ServicemanObligation:
     count: int
     date: datetime
     term: int
+
+    def to_dict(self):
+        return asdict(self)
