@@ -25,6 +25,7 @@ class ServicemanManager:
     def issue_item(self, servicemen: Serviceman, item: Item, size: str, date:datetime, granted:datetime, count: int) -> int:
         issue = Issue(item=item, size=size, date=date, granted=granted, count=count)
         servicemen.issues.append(issue)
+        item.sizes[size] -= count
         self.db.session.add(issue)
         self._set_size(servicemen, item, size)
         self.db.session.commit()
