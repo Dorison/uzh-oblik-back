@@ -22,6 +22,7 @@ app.secret_key = config("secret_key", "009e5686fbe6267253fa2c0acfae50f6c4b1e0ae3
 login_manager.init_app(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://postgres:{config('db_password')}@{config('db_host', '3.71.13.232')}:{config('db_port', '5432')}/uzh"
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
+app.config['RESTFUL_JSON'] = {'ensure_ascii': False}
 db.init_app(app)
 #TODO fix security issue
 CORS(app)
@@ -78,11 +79,12 @@ def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
 
+# отримати належності службовця
 @app.route("/serviceman/<id>/obligation")
 def get_serviceman_obligations(id):
     serviceman = serviceman_manager.get_by_id(id)
     norms = norm_manager.get_potential_norms(serviceman)
-    obligations = norm_manager.get_obligations(serviceman, norms)
+    obligations = norm_manager.get_obligations(serviceman, norms, datetime.now())
     result = [obligation.to_dict() for item_obligations in obligations.values() for obligation in item_obligations]
     return result
 
@@ -106,6 +108,14 @@ def get_item(id):
     return item.to_dict()
 
 
+@app.route("/item/<id>", methods=['POST'])
+def add_stock(id):
+    item = item_manager.get_by_id(id)
+    # "stock":{"size": count}
+    stock = request.json().get('stock')
+    item_manager.add_stock(item, stock)
+
+
 @app.route("/item", methods=['get'])
 def get_items():
     return [item.to_dict() for item in item_manager.get_all()]
@@ -119,6 +129,16 @@ def issue_item(serviceman_id, item_id):
     item = item_manager.get_by_id(item_id)
     granted = datetime.now()
     id = serviceman_manager.issue_item(serviceman, item, size, date, granted)
+    return {"id": id}, HTTPStatus.CREATED
+
+
+# задати розмір службовця для певної речі
+@app.route("/serviceman/<serviceman_id>/item/<item_id>/size", methods=['PUT'])
+def set_item_size(serviceman_id, item_id):
+    size = request.json.get("size")
+    serviceman = serviceman_manager.get_by_id(serviceman_id)
+    item = item_manager.get_by_id(item_id)
+    serviceman_manager.set_size(serviceman, item, size)
     return {"id": id}, HTTPStatus.CREATED
 
 

@@ -18,6 +18,7 @@ DBRank = Integer
 Gender = bool
 DBGender = Boolean
 
+
 class DbUser(db.Model):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     hash: Mapped[str] = mapped_column(String)
@@ -29,9 +30,20 @@ class Item(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String)
     returnable: Mapped[bool] = mapped_column(Boolean)
+    sizes: Mapped[dict[int, 'SKU']] = relationship(
+        collection_class=attribute_keyed_dict("item_id"),
+    )
 
     def to_dict(self):
         return asdict(self)
+
+
+@dataclass
+class SKU(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    size: Mapped[str] = mapped_column(String)
+    item_id = Column(Integer, ForeignKey(Item.id))
+    count: Mapped[int] = mapped_column(Integer)
 
 
 @dataclass
@@ -116,6 +128,8 @@ class Issue(db.Model):
         d["item"] = self.item.to_dict()
         d["granted"] = d.get("granted").strftime("%d.%m.%Y")
         return d
+
+
 @dataclass()
 class ServicemanObligation:
     item: Item

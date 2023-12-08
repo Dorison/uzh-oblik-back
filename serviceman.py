@@ -1,6 +1,6 @@
 import datetime
 
-from db import db, Serviceman, Issue, Item, Gender
+from db import db, Serviceman, Issue, Item, Gender, Size
 from typing import List
 
 
@@ -26,8 +26,18 @@ class ServicemanManager:
         issue = Issue(item=item, size=size, date=date, granted=granted, count=count)
         servicemen.issues.append(issue)
         self.db.session.add(issue)
+        self._set_size(servicemen, item, size)
         self.db.session.commit()
         return issue.id
+
+    def _set_size(self, servicemen: Serviceman, item:Item, size_str: str):
+        size = Size(size=size_str, item=item)
+        self.db.session.add(size)
+        servicemen.sizes[item.id] = size
+
+    def set_size(self, servicemen: Serviceman, item: Item, size: str):
+        self._set_size(servicemen, item, size)
+        self.db.session.commit()
 
 
 serviceman_manager = ServicemanManager(db)

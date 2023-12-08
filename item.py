@@ -1,12 +1,13 @@
 import datetime
 
-from db import Item, db
+from db import Item, SKU, db
 from typing import List, Dict
 from dataclasses import dataclass
 @dataclass
 class Requirement:
     item: Item
     sizes: Dict[str, int]
+
 
 class ItemManager:
 
@@ -22,8 +23,16 @@ class ItemManager:
     def get_by_id(self, id):
         return self.db.get_or_404(Item, id)
 
-    def get_all(self)->List[Item]:
+    def get_all(self) -> List[Item]:
         return self.db.session.execute(db.select(Item).order_by(Item.name)).scalars()
+
+    def add_stock(self, item: Item, stock: dict[str: int]):
+        for size, count in stock:
+            if size not in item.sizes:
+                sku = SKU(size=size, count=0)
+                item[size] = sku
+            item[size].count += count
+        self.db.session.commit()
 
     def get_requirements(self, obligations: List[Dict]) -> List[Requirement]:
         reqs: Dict[int, Dict[str, int]] = {}
