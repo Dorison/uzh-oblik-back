@@ -200,9 +200,12 @@ def hello():
 def all_ranks():
     return list(ranks[::-1]+officer_ranks[::-1])
 
+
+# всі групи всіх норм
 @app.route("/groups", methods=['GET'])
 def all_groups():
-    return norm_manager.get_groups()
+    return list(norm_manager.get_groups())
+
 
 def test():
     with app.app_context():
@@ -214,6 +217,7 @@ def test():
         t_shirt_id = item_manager.create_item("Фуфайка", False)
         t_shirt = item_manager.get_by_id(t_shirt_id)
         norm_manager.add_group(norm_id, "друга група", [ObligationDto(t_shirt_id, 365, 2)])
+        norm_manager.add_group(norm_id, "перша група", [ObligationDto(t_shirt_id, 365*2, 1)])
         kozak = serviceman_manager.get_by_id(kozak_id)
         norms = list(norm_manager.get_potential_norms(kozak))
         issue_date = norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d"))[t_shirt_id][0].date

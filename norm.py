@@ -1,5 +1,5 @@
 from db import db, Gender, Norm, Serviceman, ServicemanObligation, Obligation
-from typing import List, Dict
+from typing import List, Dict, Optional
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 from sqlalchemy import or_
@@ -72,6 +72,12 @@ class NormManager:
                 end = min(deapllicable_date, end)
             return start, end
 
+        def get_size(item_id: int) -> Optional[str]:
+            if item_id not in serviceman.sizes:
+                return None
+            return serviceman.sizes[item_id].size
+
+
         obligations: Dict[int, List[ServicemanObligation]] = {}
         for norm in norms:
             time_interval = get_time_interval(norm)
@@ -83,17 +89,15 @@ class NormManager:
                         if item.returnable:
                             if end == end_date:
                                 if item.id not in obligations:
-                                    # TODO sizes
                                     obligations[item.id] = [
-                                        ServicemanObligation(item, None, obligation.count, datetime.now(),
+                                        ServicemanObligation(item, get_size(item.id), obligation.count, datetime.now(),
                                                              obligation.term)]
                         else:
                             time = start
                             if item.id in obligations:
                                 time = obligations[item.item.id][-1].date + timedelta(days=obligation.term)
                             while time <= end:
-                                # TODO sizes
-                                serviceman_obligation = ServicemanObligation(item, None, obligation.count, time,
+                                serviceman_obligation = ServicemanObligation(item, get_size(item.id), obligation.count, time,
                                                                              obligation.term)
                                 if item.id in obligations:
                                     obligations[item.id].append(serviceman_obligation)

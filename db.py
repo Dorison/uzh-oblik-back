@@ -114,7 +114,7 @@ class Issue(db.Model):
         d = asdict(self)
         d["date"] = d.get("date").strftime("%d.%m.%Y")
         d["item"] = self.item.to_dict()
-        d["expire"] = d.get("expire").strftime("%d.%m.%Y")
+        d["granted"] = d.get("granted").strftime("%d.%m.%Y")
         return d
 @dataclass()
 class ServicemanObligation:
