@@ -22,7 +22,7 @@ app.secret_key = config("secret_key", "009e5686fbe6267253fa2c0acfae50f6c4b1e0ae3
 login_manager.init_app(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://postgres:{config('db_password')}@{config('db_host', '3.71.13.232')}:{config('db_port', '5432')}/uzh"
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
-app.config['RESTFUL_JSON'] = {'ensure_ascii': False}
+app.config['JSON_AS_ASCII'] = False
 db.init_app(app)
 #TODO fix security issue
 CORS(app)
