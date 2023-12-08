@@ -54,33 +54,37 @@ class NormManager:
         return db.session.execute(query).scalars()
 
     @staticmethod
-    def get_obligations(serviceman: Serviceman, norms: List[Norm], end_date: datetime) -> Dict[int, List[ServicemanObligation]]:
-        def get_time_interval(norm: Norm):
-            start = norm.from_date
-            end = end_date if norm.to_date is None else norm.to_date
-            if len(serviceman.rank_history) > norm.from_rank:
-                applicable_date = serviceman.rank_history[norm.from_rank]
-                if applicable_date > end:
-                    return None
-                start = max(applicable_date, start)
-            else:
+    def get_time_interval(serviceman: Serviceman, norm: Norm, end_date: datetime):
+        start = norm.from_date
+        end = end_date if norm.to_date is None else norm.to_date
+        if len(serviceman.rank_history) > norm.from_rank:
+            applicable_date = serviceman.rank_history[norm.from_rank]
+            if applicable_date > end:
                 return None
-            if len(serviceman.rank_history) > norm.to_rank+1:
-                deapllicable_date = serviceman.rank_history[norm.to_rank+1]
-                if deapllicable_date < start:
-                    return None
-                end = min(deapllicable_date, end)
-            return start, end
+            start = max(applicable_date, start)
+        else:
+            return None
+        if len(serviceman.rank_history) > norm.to_rank + 1:
+            deapllicable_date = serviceman.rank_history[norm.to_rank + 1]
+            if deapllicable_date < start:
+                return None
+            end = min(deapllicable_date, end)
+        return start, end
 
+    @staticmethod
+    def refine_norms(serviceman: Serviceman, norms: List[Norm]):
+        return [norm for norm in norms if NormManager.get_time_interval(serviceman, norm, datetime.now())]
+
+    @staticmethod
+    def get_obligations(serviceman: Serviceman, norms: List[Norm], end_date: datetime) -> Dict[int, List[ServicemanObligation]]:
         def get_size(item_id: int) -> Optional[str]:
             if item_id not in serviceman.sizes:
                 return None
             return serviceman.sizes[item_id].size
 
-
         obligations: Dict[int, List[ServicemanObligation]] = {}
         for norm in norms:
-            time_interval = get_time_interval(norm)
+            time_interval = NormManager.get_time_interval(norm, serviceman, end_date)
             if time_interval:
                 start, end = time_interval
                 for obligation in norm.obligations:

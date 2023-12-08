@@ -79,6 +79,15 @@ def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
 
+
+# отримати норми службовця
+@app.route("/serviceman/<id>/norm")
+def get_serviceman_norms(id):
+    serviceman = serviceman_manager.get_by_id(id)
+    norms = norm_manager.get_potential_norms(serviceman)
+    norms = norm_manager.refine_norms(serviceman, norms)
+    return [norm.to_dict() for norm in norms]
+
 # отримати належності службовця
 @app.route("/serviceman/<id>/obligation")
 def get_serviceman_obligations(id):
@@ -97,7 +106,7 @@ def get_servicemen():
 def create_item():
     name = request.json.get('name')
     returnable = bool(request.json.get('returnable'))
-    #term = int(request.json.get('term')) # days
+    # term = int(request.json.get('term')) # days
     id = item_manager.create_item(name, returnable, 0)
     return {"id": id}, HTTPStatus.CREATED
 
