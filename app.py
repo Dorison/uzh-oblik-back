@@ -174,8 +174,8 @@ def create_norm():
     to_rank = request.json.get("to_rank")
     name = request.json.get("name")
     reason = request.json.get("reason")
-    from_date = request.json.get("from")
-    to_date = request.json.get("to")
+    from_date = datetime.strptime(request.json.get("from"), "%Y-%m-%d")
+    to_date = datetime.strptime(request.json.get("to"), "%Y-%m-%d")
     id = norm_manager.create_norm(genders, from_rank, to_rank, name, reason, from_date, to_date)
     return {"id": id}, HTTPStatus.CREATED
 
