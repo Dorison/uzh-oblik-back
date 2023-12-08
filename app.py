@@ -24,11 +24,12 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://postgres:{config('db_pass
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
 app.config['JSON_AS_ASCII'] = False
 db.init_app(app)
-#TODO fix security issue
+# TODO fix security issue
 CORS(app)
 
 with app.app_context():
     db.create_all()
+
 
 @login_manager.unauthorized_handler
 def unauthorized():
@@ -78,6 +79,8 @@ def create_serviceman():
 def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
+
+
 
 
 # отримати норми службовця

@@ -84,7 +84,7 @@ class NormManager:
 
         obligations: Dict[int, List[ServicemanObligation]] = {}
         for norm in norms:
-            time_interval = NormManager.get_time_interval(norm, serviceman, end_date)
+            time_interval = NormManager.get_time_interval(serviceman, norm, end_date)
             if time_interval:
                 start, end = time_interval
                 for obligation in norm.obligations:
