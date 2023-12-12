@@ -206,6 +206,11 @@ def get_all_norms():
 def get_norm(norm_id):
     return norm_manager.get_norm(norm_id).to_dict()
 
+
+@app.route("/norm/<norm_id>", metods=["PUT"])
+def commit_norm(id):
+    return {'id': id}, HTTPStatus.CREATED
+
 """
 @app.route("/group/<group_id>/item", methods=['PUT'])
 def add_item(group_id):
