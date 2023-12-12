@@ -16,11 +16,19 @@ class ServicemanManager:
         self.db.session.commit()
         return serviceman.id
 
+
     def get_by_id(self, serviceman_id) -> Serviceman:
         return self.db.get_or_404(Serviceman, serviceman_id)
 
     def get_all(self) -> List[Serviceman]:
         return self.db.session.execute(db.select(Serviceman).order_by(Serviceman.surname)).scalars()
+
+    def promote(self, serviceman: Serviceman, rank: int, date: datetime):
+        rank_history = serviceman.rank_history
+        serviceman.rank_history.extend([date]*(rank-len(rank_history)+1))
+        self.db.session.add(serviceman)
+        self.db.session.commit()
+
 
     def issue_item(self, servicemen: Serviceman, item: Item, size: str, date:datetime, granted:datetime, count: int) -> int:
         issue = Issue(item=item, size=size, date=date, granted=granted, count=count)

@@ -74,6 +74,11 @@ def create_serviceman():
     id = serviceman_manager.create_service_man(name, surname, patronymic, sex, rank, group)
     return {'id': id}, HTTPStatus.CREATED
 
+@app.route("/serviceman/<id>/rank", methods=['PUT'])
+def promote(id):
+    rank = int(request.json.get('rank'))
+    serviceman = serviceman_manager.get_by_id(id)
+    serviceman_manager.promote(serviceman, rank)
 
 @app.route("/serviceman/<id>", methods=['get'])
 def get_serviceman(id):
