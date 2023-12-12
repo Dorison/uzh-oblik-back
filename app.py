@@ -91,7 +91,7 @@ def promote(id):
     return _promote(id, request, datetime.now())
 
 
-@app.route("history/serviceman/<id>/rank", methods=['PUT'])
+@app.route("/history/serviceman/<id>/rank", methods=['PUT'])
 def history_promote(id):
     return _promote(id, request, datetime.strptime(request.json.get('date'), "%Y-%m-%d"))
 
