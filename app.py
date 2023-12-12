@@ -162,6 +162,7 @@ def add_stock(id):
     item = item_manager.get_by_id(id)
     # {"size": count}
     item_manager.add_stock(item, request.json)
+    return HTTPStatus.OK
 
 
 @app.route("/item", methods=['get'])
