@@ -30,8 +30,8 @@ class ItemManager:
         for size, count in stock:
             if size not in item.sizes:
                 sku = SKU(size=size, count=0)
-                item[size] = sku
-            item[size].count += count
+                item.sizes[size] = sku
+            item.sizes[size].count += count
         self.db.session.commit()
 
     def get_requirements(self, obligations: List[Dict]) -> List[Requirement]:
