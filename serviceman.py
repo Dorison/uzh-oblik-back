@@ -1,6 +1,6 @@
 import datetime
 
-from db import db, Serviceman, Issue, Item, Gender, Size
+from db import db, Serviceman, Issue, Item, Gender, Size, ParentalLeave
 from typing import List
 
 
@@ -60,6 +60,16 @@ class ServicemanManager:
         self.db.session.add(serviceman)
         self.db.session.commit()
         return serviceman.id
+
+    def parental_leave(self, serviceman: Serviceman, from_date: datetime, to_date: datetime):
+        parental_leave = ParentalLeave(from_date=from_date, to_date=to_date)
+        db.session.add(parental_leave)
+        if serviceman.parental_leaves is None:
+            serviceman.parental_leaves = [parental_leave]
+        else:
+            serviceman.parental_leaves += parental_leave
+
+
 
 
 

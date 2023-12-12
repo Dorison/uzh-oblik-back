@@ -139,7 +139,7 @@ def create_item():
     name = request.json.get('name')
     returnable = bool(request.json.get('returnable'))
     # term = int(request.json.get('term')) # days
-    id = item_manager.create_item(name, returnable, 0)
+    id = item_manager.create_item(name, returnable)
     return {"id": id}, HTTPStatus.CREATED
 
 
