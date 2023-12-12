@@ -152,9 +152,8 @@ def get_item(id):
 @app.route("/item/<id>", methods=['POST'])
 def add_stock(id):
     item = item_manager.get_by_id(id)
-    # "stock":{"size": count}
-    stock = request.json().get('stock')
-    item_manager.add_stock(item, stock)
+    # {"size": count}
+    item_manager.add_stock(item, request.json)
 
 
 @app.route("/item", methods=['get'])
