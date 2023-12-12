@@ -27,7 +27,7 @@ class ItemManager:
         return self.db.session.execute(db.select(Item).order_by(Item.name)).scalars()
 
     def add_stock(self, item: Item, stock: dict[str: int]):
-        for size, count in stock:
+        for size, count in stock.items():
             if size not in item.sizes:
                 sku = SKU(size=size, count=0)
                 item.sizes[size] = sku
