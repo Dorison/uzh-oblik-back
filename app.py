@@ -9,6 +9,8 @@ from decouple import config
 from db import db, ranks, officer_ranks
 from flask_cors import CORS
 from datetime import timedelta, datetime
+from logging import getLogger
+logger = getLogger(__name__)
 
 datetime_format = "%d.%m.%Y %H:%M:%S"
 login_manager = LoginManager()
@@ -159,7 +161,7 @@ def get_item(id):
 def add_stock(id):
     item = item_manager.get_by_id(id)
     # {"size": count}
-    print(request.json)
+    logger.info(f"stock updated {request.json}")
     item_manager.add_stock(item, request.json)
 
 
