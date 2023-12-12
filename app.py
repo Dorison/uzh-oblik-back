@@ -166,7 +166,7 @@ def issue_item(serviceman_id, item_id):
     return {"id": id}, HTTPStatus.CREATED
 
 
-@app.route("history/serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
+@app.route("/history/serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
 def history_issue_item(serviceman_id, item_id):
     date = datetime.strptime(request.json.get('date'), "%d.%m.%Y %H:%M:%S")
     granted = datetime.strptime(request.json.get('granted'), "%Y-%m-%d")
