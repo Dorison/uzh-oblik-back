@@ -95,6 +95,10 @@ def promote(id):
     return _promote(id, request, datetime.now())
 
 
+@app.route("/serviceman/<id>/paternity_leave", methods=['PUT'])
+def paternity_leave(id):
+    return id, HTTPStatus.CREATED
+
 @app.route("/history/serviceman/<id>/rank", methods=['PUT'])
 def history_promote(id):
     return _promote(id, request, datetime.strptime(request.json.get('date'), "%Y-%m-%d"))
