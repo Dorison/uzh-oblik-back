@@ -28,7 +28,6 @@ class ServicemanManager:
         self.db.session.add(serviceman)
         self.db.session.commit()
 
-
     def issue_item(self, servicemen: Serviceman, item: Item, size: str, date:datetime, granted:datetime, count: int) -> int:
         issue = Issue(item=item, size=size, date=date, granted=granted, count=count)
         servicemen.issues.append(issue)
@@ -38,14 +37,23 @@ class ServicemanManager:
         self.db.session.commit()
         return issue.id
 
+    def history_issue_item(self, servicemen: Serviceman, item: Item, date: datetime, granted: datetime, count:int):
+        issue = Issue(item=item, date=date, granted=granted, count=count)
+        servicemen.issues.append(issue)
+        self.db.session.add(issue)
+        self.db.session.commit()
+        return issue.id
+
     def _set_size(self, servicemen: Serviceman, item:Item, size_str: str):
         size = Size(size=size_str, item=item)
         self.db.session.add(size)
         servicemen.sizes[item.id] = size
+        return size
 
     def set_size(self, servicemen: Serviceman, item: Item, size: str):
-        self._set_size(servicemen, item, size)
+        size = self._set_size(servicemen, item, size)
         self.db.session.commit()
+        return size.id
 
 
 serviceman_manager = ServicemanManager(db)

@@ -7,8 +7,8 @@ from sqlalchemy import or_
 @dataclass
 class ObligationDto:
     item_id : int
-    term: int
     count: int
+    term: int
 
 class NormManager:
     def __init__(self, db):

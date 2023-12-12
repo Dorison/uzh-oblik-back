@@ -96,6 +96,7 @@ class Serviceman(db.Model):
     sizes: Mapped[dict[int, 'Size']] = relationship(
         collection_class=attribute_keyed_dict("item_id"),
     )
+    termination_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
     def get_ranks(self):
         ranks = []
@@ -127,7 +128,7 @@ class Issue(db.Model):
     item_id = Column(Integer, ForeignKey(Item.id))
     item = relationship(Item)
     serviceman_id = Column(Integer, ForeignKey(Serviceman.id))
-    size: Mapped[str] = mapped_column(String)
+    size: Mapped[str] = mapped_column(String,  nullable=True)
     granted: Mapped[datetime] = mapped_column(DateTime)
     date: Mapped[datetime] = mapped_column(DateTime)
     count: Mapped[int] = mapped_column(Integer)
