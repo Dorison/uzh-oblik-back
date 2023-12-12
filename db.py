@@ -31,7 +31,7 @@ class Item(db.Model):
     name: Mapped[str] = mapped_column(String)
     returnable: Mapped[bool] = mapped_column(Boolean)
     sizes: Mapped[dict[int, 'SKU']] = relationship(
-        collection_class=attribute_keyed_dict("item_id"),
+        collection_class=attribute_keyed_dict("size"),
     )
 
     def to_dict(self):
