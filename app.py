@@ -159,6 +159,7 @@ def get_item(id):
 def add_stock(id):
     item = item_manager.get_by_id(id)
     # {"size": count}
+    print(request.json)
     item_manager.add_stock(item, request.json)
 
 
