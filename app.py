@@ -73,18 +73,22 @@ def _create_serviceman(request, date):
     id = serviceman_manager.create_service_man(name, surname, patronymic, sex, rank, group, date)
     return {'id': id}, HTTPStatus.CREATED
 
+
 @app.route("/serviceman", methods=['PUT'])
 def create_serviceaman():
     return _create_serviceman(request, datetime.now())
+
 
 @app.route("/history/serviceman", methods=['PUT'])
 def history_create_serviceman():
     return _create_serviceman(request, datetime.strptime(request.json.get('date'), "%Y-%m-%d"))
 
+
 def _promote(id, request, date):
     rank = int(request.json.get('rank'))
     serviceman = serviceman_manager.get_by_id(id)
     serviceman_manager.promote(serviceman, rank, date)
+
 
 @app.route("/serviceman/<id>/rank", methods=['PUT'])
 def promote(id):

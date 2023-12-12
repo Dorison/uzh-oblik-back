@@ -55,5 +55,13 @@ class ServicemanManager:
         self.db.session.commit()
         return size.id
 
+    def terminate(self, serviceman:Serviceman, date: datetime):
+        serviceman.termination_date = date
+        self.db.session.add(serviceman)
+        self.db.session.commit()
+        return serviceman.id
+
+
+
 
 serviceman_manager = ServicemanManager(db)

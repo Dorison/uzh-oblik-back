@@ -96,6 +96,7 @@ class Serviceman(db.Model):
     sizes: Mapped[dict[int, 'Size']] = relationship(
         collection_class=attribute_keyed_dict("item_id"),
     )
+    parental_leaves = relationship("ParentalLeave", backref="serviceman")
     termination_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
     def get_ranks(self):
@@ -112,6 +113,14 @@ class Serviceman(db.Model):
         del d["rank_history"]
         d["issues"] = [issue.to_dict() for issue in self.issues]
         return d
+
+
+@dataclass()
+class ParentalLeave(db.Model):
+    id = mapped_column(Integer, primary_key=True, autoincrement=True)
+    from_date: Mapped[datetime] = mapped_column(DateTime)
+    to_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
+    serviceman_id = mapped_column(Integer, ForeignKey(Serviceman.id))
 
 
 @dataclass()

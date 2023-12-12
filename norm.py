@@ -57,6 +57,8 @@ class NormManager:
     def get_time_interval(serviceman: Serviceman, norm: Norm, end_date: datetime):
         start = norm.from_date
         end = end_date if norm.to_date is None else norm.to_date
+        if serviceman.termination_date is not None:
+            end = min(end, serviceman.termination_date)
         if len(serviceman.rank_history) > norm.from_rank:
             applicable_date = serviceman.rank_history[norm.from_rank]
             if applicable_date > end:
