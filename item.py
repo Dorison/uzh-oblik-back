@@ -36,7 +36,7 @@ class ItemManager:
 
     def get_requirements(self, obligations: List[Dict]) -> List[Requirement]:
         reqs: Dict[int, Dict[str, int]] = {}
-        items = Dict[int, Item] = {}
+        items: Dict[int, Item] = {}
         for servicemnan_obligations in obligations:
             for obligation in servicemnan_obligations:
                 item = obligation.item

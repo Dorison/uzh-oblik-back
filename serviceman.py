@@ -8,9 +8,8 @@ class ServicemanManager:
     def __init__(self, db):
         self.db = db
 
-    def create_service_man(self, name, surname, patronymic, gender: Gender, rank: int, group: str):
-        now = datetime.datetime.now()
-        history = (rank+1)*[now]
+    def create_service_man(self, name, surname, patronymic, gender: Gender, rank: int, group: str, date: datetime):
+        history = (rank+1)*[date]
         serviceman = Serviceman(name=name, surname=surname, patronymic=patronymic, rank_history=history, gender=gender, group=group)
         self.db.session.add(serviceman)
         self.db.session.commit()

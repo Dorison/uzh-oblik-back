@@ -2,7 +2,7 @@ from flask import Flask, request, abort
 from http import HTTPStatus
 from user import user_manager, authenticate_user
 from item import item_manager
-from  norm import norm_manager, ObligationDto
+from norm import norm_manager, ObligationDto
 from serviceman import serviceman_manager
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from decouple import config
@@ -62,23 +62,33 @@ def create_user():
     return {'username': username, 'password': password, "is_admin": is_admin}, HTTPStatus.CREATED
 
 
-@app.route("/serviceman", methods=['PUT'])
+
 # @login_required
-def create_serviceman():
+def _create_serviceman(request, date):
     name = request.json.get('name')
     surname = request.json.get('surname')
     patronymic = request.json.get("patronymic")
     sex = bool(request.json.get('sex'))
     rank = int(request.json.get('rank'))
     group = str(request.json.get('group'))
-    id = serviceman_manager.create_service_man(name, surname, patronymic, sex, rank, group)
+    id = serviceman_manager.create_service_man(name, surname, patronymic, sex, rank, group, date)
     return {'id': id}, HTTPStatus.CREATED
 
-@app.route("/serviceman/<id>/rank", methods=['PUT'])
-def promote(id):
+@app.route("/serviceman", methods=['PUT'])
+def create_serviceaman():
+    return _create_serviceman(request, datetime.now())
+
+@app.route("/history/serviceman", methods=['PUT'])
+def history_create_serviceman():
+    return _create_serviceman(request, datetime.strptime(request.json.get('date'), "%Y-%m-%d"))
+
+def _promote(id, request, date):
     rank = int(request.json.get('rank'))
     serviceman = serviceman_manager.get_by_id(id)
-    serviceman_manager.promote(serviceman, rank)
+    serviceman_manager.promote(serviceman, rank, datetime.now())
+
+@app.route("/serviceman/<id>/rank", methods=['PUT'])
+
 
 @app.route("/serviceman/<id>", methods=['get'])
 def get_serviceman(id):
@@ -204,10 +214,11 @@ def get_all_norms():
 
 @app.route("/norm/<norm_id>", methods=['GET'])
 def get_norm(norm_id):
-    return norm_manager.get_norm(norm_id).to_dict()
+    return norm_manager.get_norm(norm_id).to_dict_full()
 
 
-@app.route("/norm/<norm_id>", metods=["PUT"])
+# зберегти норму
+@app.route("/norm/<norm_id>", methods=["PUT"])
 def commit_norm(id):
     return {'id': id}, HTTPStatus.CREATED
 
@@ -249,7 +260,7 @@ def all_groups():
     return list(norm_manager.get_groups())
 
 
-def test():
+def test1():
     with app.app_context():
         # user_manager.create_user("test", "test", True)
         kozak_id = serviceman_manager.create_service_man("Козак", "Андрій", "Володимирович", True, 13, "друга група")
@@ -265,6 +276,14 @@ def test():
         issue_date = norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d"))[t_shirt_id][0].date
         serviceman_manager.issue_item(kozak, t_shirt, "XXL", issue_date, datetime.now(), 1)
         print(norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d")))
+
+def test():
+    with app.app_context():
+        norm = norm_manager.get_norm(1)
+        print(norm)
+        print(norm.to_dict())
+        print(norm.to_dict_full())
+        print(norm.obligations)
 
 
 if __name__ == '__main__':

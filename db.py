@@ -62,7 +62,12 @@ class Norm(db.Model):
     def to_dict(self):
         return asdict(self)
 
+    def to_dict_full(self):
+        d = self.to_dict()
+        d["obligations"] = [obligation.to_dict() for obligation in self.obligations]
+        return d
 
+@dataclass()
 class Obligation(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     group: Mapped[str] = mapped_column(String)
@@ -71,6 +76,11 @@ class Obligation(db.Model):
     term:  Mapped[int] = mapped_column(Integer)
     norm_id = Column(Integer, ForeignKey(Norm.id))
     count: Mapped[int] = mapped_column(Integer)
+
+    def to_dict(self):
+        d = asdict(self)
+        d['item'] = self.item.to_dict()
+        return d
 
 
 @dataclass
