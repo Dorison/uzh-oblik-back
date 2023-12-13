@@ -123,7 +123,9 @@ def history_promote(id):
 
 @app.route("/serviceman/<id>/terminate", methods=['PUT'])
 def terminate(id):
-    id = serviceman_manager.terminate()
+    date = datetime.strptime(request.json.get('from_date'), "%Y-%m-%d")
+    serviceman = serviceman_manager.get_by_id(id)
+    serviceman_manager.terminate(serviceman, date)
     return {"id": id}
 
 
