@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, attribute_keyed_
 from dataclasses import dataclass, asdict
 from sqlalchemy.dialects.postgresql import ARRAY
 
+datetime_format = "%d.%m.%Y %H:%M:%S"
 class Base(DeclarativeBase):
     pass
 
@@ -96,7 +97,7 @@ class Serviceman(db.Model):
     sizes: Mapped[dict[int, 'Size']] = relationship(
         collection_class=attribute_keyed_dict("item_id"),
     )
-    parental_leaves = relationship("ParentalLeave", backref="serviceman")
+    parental_leaves = relationship("ParentalLeave", backref="serviceman", order_by="inc(PaternalLeave.from_date)")
     termination_date: Mapped[datetime] = mapped_column(DateTime, nullable=True)
 
     def get_ranks(self):
@@ -159,4 +160,5 @@ class ServicemanObligation:
     term: int
 
     def to_dict(self):
-        return asdict(self)
+        d = asdict(self)
+        d['date'] = d['date'].strftime(datetime_format)
