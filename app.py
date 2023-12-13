@@ -100,6 +100,7 @@ def _promote(id, request, date):
     rank = int(request.json.get('rank'))
     serviceman = serviceman_manager.get_by_id(id)
     serviceman_manager.promote(serviceman, rank, date)
+    return {"id", id}
 
 
 @app.route("/serviceman/<id>/rank", methods=['PUT'])
