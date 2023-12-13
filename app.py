@@ -121,6 +121,11 @@ def paternity_leave(id):
 def history_promote(id):
     return _promote(id, request, datetime.strptime(request.json.get('date'), "%Y-%m-%d"))
 
+@app.route("serviceman/<id>/terminate", methods=['PUT'])
+def terminate(id):
+    id = serviceman_manager.terminate()
+    return {"id": id}
+
 
 @app.route("/serviceman/<id>", methods=['get'])
 def get_serviceman(id):
