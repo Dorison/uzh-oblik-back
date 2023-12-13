@@ -10,6 +10,31 @@ class ObligationDto:
     count: int
     term: int
 
+
+def in_paternal_leave(serviceman: Serviceman, date: datetime):
+    for paternal_leave in serviceman.parental_leaves:
+        if paternal_leave.from_date<date and (paternal_leave.to_date is None or date<paternal_leave.to_date):
+            return True
+    return False
+
+
+def adjust_for_paternal_leave_increment(serviceman: Serviceman, date: datetime, delta: timedelta, cutof: datetime):
+    current = date
+    for paternal_leave in serviceman.parental_leaves:
+        if paternal_leave.from_date<current:
+            if paternal_leave.to_date is None:
+                return cutof
+            if paternal_leave.to_date > current:
+                current = paternal_leave.to_date
+        else:
+            if paternal_leave.from_date < (current + delta):
+                delta -= paternal_leave.from_date - current
+                current = paternal_leave.to_date
+                if current is None:
+                    return cutof
+    return current + delta
+
+
 class NormManager:
     def __init__(self, db):
         self.db = db
@@ -93,7 +118,7 @@ class NormManager:
                     item = obligation.item
                     if serviceman.group == obligation.group:
                         if item.returnable:
-                            if end == end_date:
+                            if end == end_date and not in_paternal_leave(serviceman, end_date):
                                 if item.id not in obligations:
                                     obligations[item.id] = [
                                         ServicemanObligation(item, get_size(item.id), obligation.count, datetime.now(),
@@ -101,9 +126,9 @@ class NormManager:
                         else:
                             time = start
                             if item.id in obligations:
-                                time = obligations[item.item.id][-1].date + timedelta(days=obligation.term)
+                                time = max(time, adjust_for_paternal_leave_increment(serviceman, obligations[item.item.id][-1].date, timedelta(days=obligation.term), end_date))
                             while time <= end:
-                                serviceman_obligation = ServicemanObligation(item, get_size(item.id), obligation.count, time,
+                                serviceman_obligation = ServicemanObligation(item, get_size(item.id), obligation.count, time.replace(microsecond=0),
                                                                              obligation.term)
                                 if item.id in obligations:
                                     obligations[item.id].append(serviceman_obligation)
