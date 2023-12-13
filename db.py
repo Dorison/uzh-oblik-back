@@ -162,3 +162,4 @@ class ServicemanObligation:
     def to_dict(self):
         d = asdict(self)
         d['date'] = d['date'].strftime(datetime_format)
+        return d
