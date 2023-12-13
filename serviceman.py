@@ -66,7 +66,7 @@ class ServicemanManager:
         if serviceman.parental_leaves is None:
             serviceman.parental_leaves = [parental_leave]
         else:
-            serviceman.parental_leaves += parental_leave
+            serviceman.parental_leaves.appent(parental_leave)
         self.db.session.add(serviceman)
         self.db.session.commit()
         return parental_leave.id
