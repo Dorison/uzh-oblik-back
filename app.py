@@ -10,6 +10,7 @@ from db import db, ranks, officer_ranks
 from flask_cors import CORS
 from datetime import timedelta, datetime
 from logging import getLogger
+import json
 logger = getLogger(__name__)
 
 datetime_format = "%d.%m.%Y %H:%M:%S"
@@ -28,6 +29,15 @@ app.config['JSON_AS_ASCII'] = False
 db.init_app(app)
 # TODO fix security issue
 CORS(app)
+
+
+class NonASCIIJSONEncoder(json.JSONEncoder):
+    def __init__(self, **kwargs):
+        kwargs['ensure_ascii'] = False
+        super(NonASCIIJSONEncoder, self).__init__(**kwargs)
+
+
+app.json_encoder = NonASCIIJSONEncoder
 
 with app.app_context():
     db.create_all()
