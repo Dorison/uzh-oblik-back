@@ -115,7 +115,7 @@ def paternity_leave(id):
     to_date = datetime.strptime(to_date_str, "%Y-%m-%d") if to_date_str else None
     serviceman = serviceman_manager.get_by_id(id)
     leave_id = serviceman_manager.parental_leave(serviceman, from_date, to_date)
-    return leave_id, HTTPStatus.CREATED
+    return {id: leave_id}, HTTPStatus.CREATED
 
 
 @app.route("/history/serviceman/<id>/rank", methods=['PUT'])
