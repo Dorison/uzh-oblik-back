@@ -24,10 +24,11 @@ class ServicemanManager:
 
     def promote(self, serviceman: Serviceman, rank: int, date: datetime):
         rank_history = serviceman.rank_history
+        x = len(rank_history)
         serviceman.rank_history.extend([date]*(rank-len(rank_history)+1))
-        message = f"{rank}, {len(rank_history)}, {len(serviceman.rank_history)}"
-        logging.info("info "+ message)
-        logging.error("error"+ message)
+        message = f"{rank}, {x}, {len(serviceman.rank_history)}"
+        logging.info("info " + message)
+        logging.error("error " + message)
         self.db.session.add(serviceman)
         self.db.session.commit()
 
