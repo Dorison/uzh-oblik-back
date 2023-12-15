@@ -121,7 +121,7 @@ def paternity_leave(id):
 def paternity_leave_close(id, leave_id):
     to_date = datetime.strptime(request.json.get('to_date'), "%Y-%m-%d")
     serviceman = serviceman_manager.get_by_id(id)
-    leave_id = serviceman_manager.parental_leave_close(serviceman, leave_id, to_date)
+    leave_id = serviceman_manager.parental_leave_close(serviceman, int(leave_id), to_date)
     return {id: leave_id}, HTTPStatus.CREATED
 
 
@@ -232,7 +232,7 @@ def set_item_size(serviceman_id, item_id):
 @app.route("/requirements", methods=['GET'])
 def requirements():
     to_date = datetime.strptime(request.args.get("to"), "%Y-%m-%d")
-    return [requirement.to_dict() for requirement in _reqruirements(to_date)]
+    return [requirement.to_dict() for requirement in _reqruirements(to_date)][0]["sizes"]
 
 
 def _reqruirements(to_date):
@@ -340,8 +340,6 @@ def test1():
         issue_date = norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d"))[t_shirt_id][0].date
         serviceman_manager.issue_item(kozak, t_shirt, "XXL", issue_date, datetime.now(), 1)
         print(norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d")))
-
-
 
 def test():
     with app.app_context():
