@@ -108,7 +108,7 @@ class NormManager:
             if item_id not in serviceman.sizes:
                 return None
             return serviceman.sizes[item_id].size
-
+        cutoff = end_date+ timedelta(days=1)
         obligations: Dict[int, List[ServicemanObligation]] = {}
         for norm in norms:
             time_interval = NormManager.get_time_interval(serviceman, norm, end_date)
@@ -126,7 +126,7 @@ class NormManager:
                         else:
                             time = start
                             if item.id in obligations:
-                                time = max(time, adjust_for_paternal_leave_increment(serviceman, obligations[item.item.id][-1].date, timedelta(days=obligation.term), end_date))
+                                time = max(time, adjust_for_paternal_leave_increment(serviceman, obligations[item.item.id][-1].date, timedelta(days=obligation.term), cutoff))
                             while time <= end:
                                 serviceman_obligation = ServicemanObligation(item, get_size(item.id), obligation.count, time.replace(microsecond=0),
                                                                              obligation.term)
@@ -134,7 +134,7 @@ class NormManager:
                                     obligations[item.id].append(serviceman_obligation)
                                 else:
                                     obligations[item.id] = [serviceman_obligation]
-                                time += timedelta(days=obligation.term)
+                                time = adjust_for_paternal_leave_increment(serviceman, time, timedelta(days=obligation.term), cutoff)
         for issue in serviceman.issues:
             if issue.item.returnable:
                 for serviceman_obligation in obligations[issue.item.id]:
