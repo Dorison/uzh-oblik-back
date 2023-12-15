@@ -103,12 +103,12 @@ def _promote(id, request, date):
     return {"id": id}
 
 
-@app.route("/serviceman/<id>/rank", methods=['PUT'])
+@app.route("/serviceman/<int:id>/rank", methods=['PUT'])
 def promote(id):
     return _promote(id, request, datetime.now())
 
 
-@app.route("/serviceman/<id>/paternity_leave", methods=['PUT'])
+@app.route("/serviceman/<int:id>/paternity_leave", methods=['PUT'])
 def paternity_leave(id):
     from_date = datetime.strptime(request.json.get('from_date'), "%Y-%m-%d")
     to_date_str = request.json.get('to_date')
@@ -117,20 +117,20 @@ def paternity_leave(id):
     leave_id = serviceman_manager.parental_leave(serviceman, from_date, to_date)
     return {id: leave_id}, HTTPStatus.CREATED
 
-@app.route("/serviceman/<id>/paternity_leave/<leave_id>", methods=['PATCH'])
+@app.route("/serviceman/<int:id>/paternity_leave/<int:leave_id>", methods=['PATCH'])
 def paternity_leave_close(id, leave_id):
     to_date = datetime.strptime(request.json.get('to_date'), "%Y-%m-%d")
     serviceman = serviceman_manager.get_by_id(id)
-    leave_id = serviceman_manager.parental_leave_close(serviceman, int(leave_id), to_date)
+    leave_id = serviceman_manager.parental_leave_close(serviceman, leave_id, to_date)
     return {id: leave_id}, HTTPStatus.CREATED
 
 
-@app.route("/history/serviceman/<id>/rank", methods=['PUT'])
+@app.route("/history/serviceman/<int:id>/rank", methods=['PUT'])
 def history_promote(id):
     return _promote(id, request, datetime.strptime(request.json.get('date'), "%Y-%m-%d"))
 
 
-@app.route("/serviceman/<id>/terminate", methods=['PUT'])
+@app.route("/serviceman/<int:id>/terminate", methods=['PUT'])
 def terminate(id):
     date = datetime.strptime(request.json.get('from_date'), "%Y-%m-%d")
     serviceman = serviceman_manager.get_by_id(id)
@@ -138,14 +138,14 @@ def terminate(id):
     return {"id": id}
 
 
-@app.route("/serviceman/<id>", methods=['get'])
+@app.route("/serviceman/<int:id>", methods=['get'])
 def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
 
 
 # отримати норми службовця
-@app.route("/serviceman/<id>/norm")
+@app.route("/serviceman/<int:id>/norm")
 def get_serviceman_norms(id):
     serviceman = serviceman_manager.get_by_id(id)
     norms = norm_manager.get_potential_norms(serviceman)
@@ -154,7 +154,7 @@ def get_serviceman_norms(id):
 
 
 # отримати належності службовця
-@app.route("/serviceman/<id>/obligation")
+@app.route("/serviceman/<int:id>/obligation")
 def get_serviceman_obligations(id):
     serviceman = serviceman_manager.get_by_id(id)
     norms = norm_manager.get_potential_norms(serviceman)
@@ -177,13 +177,13 @@ def create_item():
     return {"id": id}, HTTPStatus.CREATED
 
 
-@app.route("/item/<id>", methods=['get'])
+@app.route("/item/<int:id>", methods=['get'])
 def get_item(id):
     item = item_manager.get_by_id(id)
     return item.to_dict()
 
 
-@app.route("/item/<id>", methods=['POST'])
+@app.route("/item/<int:id>", methods=['POST'])
 def add_stock(id):
     item = item_manager.get_by_id(id)
     # {"size": count}
@@ -196,7 +196,7 @@ def get_items():
     return [item.to_dict() for item in item_manager.get_all()]
 
 
-@app.route("/serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
+@app.route("/serviceman/<int:serviceman_id>/item/<int:item_id>", methods=['PUT'])
 def issue_item(serviceman_id, item_id):
     date = datetime.strptime(request.json.get('date'), "%d.%m.%Y %H:%M:%S")
     count = request.json.get("count")
@@ -208,7 +208,7 @@ def issue_item(serviceman_id, item_id):
     return {"id": id}, HTTPStatus.CREATED
 
 
-@app.route("/history/serviceman/<serviceman_id>/item/<item_id>", methods=['PUT'])
+@app.route("/history/serviceman/<int:serviceman_id>/item/<int:item_id>", methods=['PUT'])
 def history_issue_item(serviceman_id, item_id):
     date = datetime.strptime(request.json.get('date'), "%d.%m.%Y %H:%M:%S")
     granted = datetime.strptime(request.json.get('granted'), "%Y-%m-%d")
@@ -220,7 +220,7 @@ def history_issue_item(serviceman_id, item_id):
 
 
 # задати розмір службовця для певної речі
-@app.route("/serviceman/<serviceman_id>/item/<item_id>/size", methods=['PUT'])
+@app.route("/serviceman/<int:serviceman_id>/item/<int:item_id>/size", methods=['PUT'])
 def set_item_size(serviceman_id, item_id):
     size = request.json.get("size")
     serviceman = serviceman_manager.get_by_id(serviceman_id)
@@ -262,7 +262,7 @@ def create_norm():
     return {"id": id}, HTTPStatus.CREATED
 
 
-@app.route("/norm/<norm_id>/group", methods=['PUT'])
+@app.route("/norm/<int:norm_id>/group", methods=['PUT'])
 def create_norm_group(norm_id):
     name = request.json.get("name")
     obligations = [ObligationDto(item_id=jobligation["item_id"], count=jobligation["count"], term=jobligation["term"]) for jobligation in request.json.get("items")]
@@ -276,18 +276,18 @@ def get_all_norms():
     return [norm.to_dict() for norm in norm_manager.get_all()]
 
 
-@app.route("/norm/<norm_id>", methods=['GET'])
+@app.route("/norm/<int:norm_id>", methods=['GET'])
 def get_norm(norm_id):
     return norm_manager.get_norm(norm_id).to_dict_full()
 
 
 # зберегти норму
-@app.route("/norm/<norm_id>", methods=["PUT"])
+@app.route("/norm/<int:norm_id>", methods=["PUT"])
 def commit_norm(id):
     return {'id': id}, HTTPStatus.CREATED
 
 """
-@app.route("/group/<group_id>/item", methods=['PUT'])
+@app.route("/group/<int:group_id>/item", methods=['PUT'])
 def add_item(group_id):
     item_id = request.json.get("item_id")
     term = request.json.get("term")
