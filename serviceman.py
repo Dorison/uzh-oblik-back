@@ -3,7 +3,7 @@ import datetime
 from db import db, Serviceman, Issue, Item, Gender, Size, ParentalLeave
 from typing import List
 
-
+import logging
 class ServicemanManager:
     def __init__(self, db):
         self.db = db
@@ -25,6 +25,9 @@ class ServicemanManager:
     def promote(self, serviceman: Serviceman, rank: int, date: datetime):
         rank_history = serviceman.rank_history
         serviceman.rank_history.extend([date]*(rank-len(rank_history)+1))
+        message = f"{rank}, {len(rank_history)}, {len(serviceman.rank_history)}"
+        logging.info("info "+ message)
+        logging.error("error"+ message)
         self.db.session.add(serviceman)
         self.db.session.commit()
 
