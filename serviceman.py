@@ -2,6 +2,7 @@ import datetime
 
 from db import db, Serviceman, Issue, Item, Gender, Size, ParentalLeave
 from typing import List
+from flask import abort
 
 import logging
 class ServicemanManager:
@@ -25,12 +26,18 @@ class ServicemanManager:
     def promote(self, serviceman: Serviceman, rank: int, date: datetime):
         rank_history = serviceman.rank_history
         x = len(rank_history)
+        print(f"promotion : {(rank-len(rank_history)+1)}")
         serviceman.rank_history.extend([date]*(rank-len(rank_history)+1))
         message = f"{rank}, {x}, {len(serviceman.rank_history)}"
         logging.info("info " + message)
         logging.error("error " + message)
         self.db.session.add(serviceman)
+        self.db.session.add(serviceman.rank_history)
+        print(serviceman.rank_history)
+        print(serviceman.rank_history)
         self.db.session.commit()
+        print(serviceman.rank_history)
+        print(serviceman.rank_history)
 
     def issue_item(self, servicemen: Serviceman, item: Item, size: str, date:datetime, granted:datetime, count: int) -> int:
         issue = Issue(item=item, size=size, date=date, granted=granted, count=count)
@@ -75,8 +82,18 @@ class ServicemanManager:
         self.db.session.commit()
         return parental_leave.id
 
-
-
+    def parental_leave_close(self, serviceman: Serviceman, leave_id: int, to_date: datetime) -> int:
+        for leave in serviceman.parental_leaves:
+            if leave.id == leave_id:
+                break
+        else:
+            abort(404, f"{leave_id} not found in leaves of {serviceman.id}")
+        if leave.to_date is not None:
+            abort(403, f"leave already closed {leave.to_date}")
+        leave.to_date = to_date
+        self.db.session.add(serviceman)
+        self.db.session.commit()
+        return leave_id
 
 
 serviceman_manager = ServicemanManager(db)

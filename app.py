@@ -117,6 +117,13 @@ def paternity_leave(id):
     leave_id = serviceman_manager.parental_leave(serviceman, from_date, to_date)
     return {id: leave_id}, HTTPStatus.CREATED
 
+@app.route("/serviceman/<id>/paternity_leave/<leave_id>", methods=['PATCH'])
+def paternity_leave_close(id, leave_id):
+    to_date = datetime.strptime(request.json.get('to_date'), "%Y-%m-%d")
+    serviceman = serviceman_manager.get_by_id(id)
+    leave_id = serviceman_manager.parental_leave_close(serviceman, leave_id, to_date)
+    return {id: leave_id}, HTTPStatus.CREATED
+
 
 @app.route("/history/serviceman/<id>/rank", methods=['PUT'])
 def history_promote(id):
@@ -329,13 +336,20 @@ def test1():
         serviceman_manager.issue_item(kozak, t_shirt, "XXL", issue_date, datetime.now(), 1)
         print(norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d")))
 
+
 def test():
     with app.app_context():
-        norm = norm_manager.get_norm(1)
-        print(norm)
-        print(norm.to_dict())
-        print(norm.to_dict_full())
-        print(norm.obligations)
+        serviceman = serviceman_manager.get_by_id(1)
+        rank = len(serviceman.rank_history)-1
+        print(rank)
+        serviceman_manager.promote(serviceman,rank+1, datetime.now())
+        rank = len(serviceman.rank_history) - 1
+        print(rank)
+        serviceman = serviceman_manager.get_by_id(1)
+        rank = len(serviceman.rank_history) - 1
+        print(rank)
+
+
 
 
 if __name__ == '__main__':
