@@ -113,7 +113,7 @@ class Serviceman(db.Model):
         d["rank"] = len(d["rank_history"]) - 1
         del d["rank_history"]
         d["issues"] = [issue.to_dict() for issue in self.issues]
-        d["parental_leaves"] = [parental_leave.to_dict() for parental_leave in d["parental_leaves"]]
+        d["parental_leaves"] = [parental_leave.to_dict() for parental_leave in self.parental_leaves]
         return d
 
 
