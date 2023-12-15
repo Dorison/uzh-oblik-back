@@ -233,7 +233,7 @@ def set_item_size(serviceman_id, item_id):
 @app.route("/requirements", methods=['GET'])
 def requirements():
     to_date = datetime.strptime(request.args.get("to"), "%Y-%m-%d")
-    return [requirement.to_dict() for requirement in _reqruirements(to_date)][0]["sizes"]
+    return [requirement.to_dict() for requirement in _reqruirements(to_date)]
 
 
 def _reqruirements(to_date):

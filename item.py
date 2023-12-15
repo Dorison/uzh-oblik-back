@@ -9,8 +9,9 @@ class Requirement:
     sizes: Dict[str, int]
 
     def to_dict(self):
-        return asdict(self)
-
+        d = asdict(self)
+        d['sizes'] = {"?" if k is None else k: v for k, v in self.sizes.items()}
+        return d
 
 class ItemManager:
 
