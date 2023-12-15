@@ -25,19 +25,10 @@ class ServicemanManager:
 
     def promote(self, serviceman: Serviceman, rank: int, date: datetime):
         rank_history = serviceman.rank_history
-        x = len(rank_history)
-        print(f"promotion : {(rank-len(rank_history)+1)}")
-        rank_history.extend([date] * (rank - len(rank_history) + 1))
-        serviceman.rank_history = []
-        message = f"{rank}, {x}, {len(serviceman.rank_history)}"
-        logging.info("info " + message)
-        logging.error("error " + message)
+        # TODO understand this behaviour
+        serviceman.rank_history = rank_history[:]+[date] * (rank - len(rank_history) + 1)
         self.db.session.add(serviceman)
-        print(serviceman.rank_history)
-        print(serviceman.rank_history)
         self.db.session.commit()
-        print(serviceman.rank_history)
-        print(serviceman.rank_history)
 
     def issue_item(self, servicemen: Serviceman, item: Item, size: str, date:datetime, granted:datetime, count: int) -> int:
         issue = Issue(item=item, size=size, date=date, granted=granted, count=count)
