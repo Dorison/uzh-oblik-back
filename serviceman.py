@@ -28,7 +28,7 @@ class ServicemanManager:
         x = len(rank_history)
         print(f"promotion : {(rank-len(rank_history)+1)}")
         rank_history.extend([date] * (rank - len(rank_history) + 1))
-        serviceman.rank_history = rank_history
+        serviceman.rank_history = []
         message = f"{rank}, {x}, {len(serviceman.rank_history)}"
         logging.info("info " + message)
         logging.error("error " + message)

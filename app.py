@@ -232,7 +232,7 @@ def set_item_size(serviceman_id, item_id):
 @app.route("/requirements", methods=['GET'])
 def requirements():
     to_date = datetime.strptime(request.args.get("to"), "%Y-%m-%d")
-    return _reqruirements(to_date)
+    return [requirement.to_dict() for requirement in _reqruirements(to_date)]
 
 
 def _reqruirements(to_date):
@@ -362,6 +362,6 @@ def test0():
 if __name__ == '__main__':
     is_test = config("test", False, cast=bool)
     if is_test:
-        test0()
+        test()
     else:
         app.run(host='0.0.0.0')

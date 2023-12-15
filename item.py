@@ -2,11 +2,14 @@ import datetime
 
 from db import Item, SKU, db
 from typing import List, Dict
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 @dataclass
 class Requirement:
     item: Item
     sizes: Dict[str, int]
+
+    def to_dict(self):
+        return asdict(self)
 
 
 class ItemManager:
