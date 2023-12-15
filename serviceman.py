@@ -27,12 +27,12 @@ class ServicemanManager:
         rank_history = serviceman.rank_history
         x = len(rank_history)
         print(f"promotion : {(rank-len(rank_history)+1)}")
-        serviceman.rank_history.extend([date]*(rank-len(rank_history)+1))
+        rank_history.extend([date] * (rank - len(rank_history) + 1))
+        serviceman.rank_history = rank_history
         message = f"{rank}, {x}, {len(serviceman.rank_history)}"
         logging.info("info " + message)
         logging.error("error " + message)
         self.db.session.add(serviceman)
-        self.db.session.add(serviceman.rank_history)
         print(serviceman.rank_history)
         print(serviceman.rank_history)
         self.db.session.commit()

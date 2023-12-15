@@ -129,6 +129,7 @@ def paternity_leave_close(id, leave_id):
 def history_promote(id):
     return _promote(id, request, datetime.strptime(request.json.get('date'), "%Y-%m-%d"))
 
+
 @app.route("/serviceman/<id>/terminate", methods=['PUT'])
 def terminate(id):
     date = datetime.strptime(request.json.get('from_date'), "%Y-%m-%d")
@@ -231,6 +232,10 @@ def set_item_size(serviceman_id, item_id):
 @app.route("/requirements", methods=['GET'])
 def requirements():
     to_date = datetime.strptime(request.args.get("to"), "%Y-%m-%d")
+    return _reqruirements(to_date)
+
+
+def _reqruirements(to_date):
     staff = [serviceman for serviceman in serviceman_manager.get_all() if serviceman.termination_date is None]
     norms = list(norm_manager.get_all())
     obligations = [norm_manager.get_obligations(serviceman, norms, to_date) for serviceman in staff]
@@ -337,6 +342,7 @@ def test1():
         print(norm_manager.get_obligations(kozak, norms, datetime.strptime("2025-11-28", "%Y-%m-%d")))
 
 
+
 def test():
     with app.app_context():
         serviceman = serviceman_manager.get_by_id(1)
@@ -349,12 +355,13 @@ def test():
         rank = len(serviceman.rank_history) - 1
         print(rank)
 
-
-
+def test0():
+    with app.app_context():
+        print(_reqruirements(datetime.strptime("2024-12-31", "%Y-%m-%d")))
 
 if __name__ == '__main__':
     is_test = config("test", False, cast=bool)
     if is_test:
-        test()
+        test0()
     else:
         app.run(host='0.0.0.0')

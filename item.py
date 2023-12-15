@@ -38,17 +38,18 @@ class ItemManager:
         reqs: Dict[int, Dict[str, int]] = {}
         items: Dict[int, Item] = {}
         for servicemnan_obligations in obligations:
-            for obligation in servicemnan_obligations:
-                item = obligation.item
-                if item.id in reqs:
-                    req = reqs[item.id]
-                    if obligation.size in req:
-                        req[obligation.size] += obligation.count
+            for obligation_list in servicemnan_obligations.values():
+                for obligation in obligation_list:
+                    item = obligation.item
+                    if item.id in reqs:
+                        req = reqs[item.id]
+                        if obligation.size in req:
+                            req[obligation.size] += obligation.count
+                        else:
+                            req[obligation.size] = obligation.count
                     else:
-                        req[obligation.size] = obligation.count
-                else:
-                    reqs[item.id] = {obligation.size: obligation.count}
-                    items[item.id] = item
+                        reqs[item.id] = {obligation.size: obligation.count}
+                        items[item.id] = item
         return [Requirement(items[i], req) for i, req in reqs.items()]
 
 """ def get_expires(self, from_date, term: int):
