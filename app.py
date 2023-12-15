@@ -117,6 +117,7 @@ def paternity_leave(id):
     leave_id = serviceman_manager.parental_leave(serviceman, from_date, to_date)
     return {id: leave_id}, HTTPStatus.CREATED
 
+
 @app.route("/serviceman/<int:id>/paternity_leave/<int:leave_id>", methods=['PATCH'])
 def paternity_leave_close(id, leave_id):
     to_date = datetime.strptime(request.json.get('to_date'), "%Y-%m-%d")
