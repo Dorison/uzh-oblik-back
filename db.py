@@ -125,7 +125,9 @@ class ParentalLeave(db.Model):
     serviceman_id = mapped_column(Integer, ForeignKey(Serviceman.id))
 
     def to_dict(self):
-        return asdict(self)
+        d = asdict(self)
+        d["id"] = self.id
+        return d
 
 
 @dataclass()
