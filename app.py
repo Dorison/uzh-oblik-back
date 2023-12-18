@@ -357,16 +357,18 @@ def test():
 
 def test0():
     with app.app_context():
-        serviceman = serviceman_manager.get_by_id(35)
+        serviceman = serviceman_manager.get_by_id(53)
         rank = len(serviceman.rank_history)-1
         print(rank)
         norms = norm_manager.get_potential_norms(serviceman)
         norms = list(norms)
         ref = norm_manager.refine_norms(serviceman, norms)
         ols = norm_manager.get_obligations(serviceman, norms, datetime.now())
+        reqs = norm_manager.get_obligations(serviceman, norms, datetime.strptime("2025-11-28", "%Y-%m-%d"))
         print(list(norms))
         print(ref)
         print(ols)
+        print(reqs)
 
 if __name__ == '__main__':
     is_test = config("test", False, cast=bool)

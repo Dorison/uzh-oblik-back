@@ -60,7 +60,7 @@ class NormManager:
 
     def get_all(self):
         query = self.db.select(Norm)
-        return db.session.execute(query).scalars()
+        return db.session.execute(query).order_by(Norm.from_date).scalars()
 
     def get_potential_norms(self, serviceman: Serviceman):
         gender = serviceman.gender
@@ -149,7 +149,7 @@ class NormManager:
                         serviceman_obligation.count -= issue.count
                         break
                 else:
-                    raise Exception(f"{issue} not found in {obligations[issue.item.id]}")
+                    raise Exception(f"{issue} not found in {obligations[issue.item.id]} for serviceman {serviceman.id}")
                 if serviceman_obligation.count == 0:
                     obligations[issue.item.id].remove(serviceman_obligation)
         return obligations
