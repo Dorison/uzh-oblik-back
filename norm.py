@@ -59,8 +59,8 @@ class NormManager:
         return db.get_or_404(Norm, norm_id)
 
     def get_all(self):
-        query = self.db.select(Norm)
-        return db.session.execute(query).order_by(Norm.from_date).scalars()
+        query = self.db.select(Norm).order_by(Norm.from_date)
+        return db.session.execute(query).scalars()
 
     def get_potential_norms(self, serviceman: Serviceman):
         gender = serviceman.gender
