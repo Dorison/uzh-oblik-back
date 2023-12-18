@@ -357,11 +357,20 @@ def test():
 
 def test0():
     with app.app_context():
-        print(_reqruirements(datetime.strptime("2024-12-31", "%Y-%m-%d")))
+        serviceman = serviceman_manager.get_by_id(35)
+        rank = len(serviceman.rank_history)-1
+        print(rank)
+        norms = norm_manager.get_potential_norms(serviceman)
+        norms = list(norms)
+        ref = norm_manager.refine_norms(serviceman, norms)
+        ols = norm_manager.get_obligations(serviceman, norms, datetime.now())
+        print(list(norms))
+        print(ref)
+        print(ols)
 
 if __name__ == '__main__':
     is_test = config("test", False, cast=bool)
     if is_test:
-        test()
+        test0()
     else:
         app.run(host='0.0.0.0')

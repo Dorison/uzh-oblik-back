@@ -126,7 +126,7 @@ class NormManager:
                         else:
                             time = start
                             if item.id in obligations:
-                                time = max(time, adjust_for_paternal_leave_increment(serviceman, obligations[item.item.id][-1].date, timedelta(days=obligation.term), cutoff))
+                                time = max(time, adjust_for_paternal_leave_increment(serviceman, obligations[item.item_id][-1].date, timedelta(days=obligation.term), cutoff))
                             while time <= end:
                                 serviceman_obligation = ServicemanObligation(item, get_size(item.id), obligation.count, time.replace(microsecond=0),
                                                                              obligation.term)
