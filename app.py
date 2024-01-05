@@ -155,11 +155,13 @@ def get_serviceman_norms(id):
 
 
 # отримати належності службовця
-@app.route("/serviceman/<int:id>/obligation")
+@app.route("/serviceman/<int:id>/obligation", methods=['get'])
 def get_serviceman_obligations(id):
+    to_date_str = request.args.get("to")
+    to_date = datetime.now() if to_date_str is None else datetime.strptime(to_date_str, "%Y-%m-%d")
     serviceman = serviceman_manager.get_by_id(id)
     norms = norm_manager.get_potential_norms(serviceman)
-    obligations = norm_manager.get_obligations(serviceman, norms, datetime.now())
+    obligations = norm_manager.get_obligations(serviceman, norms, to_date)
     result = [obligation.to_dict() for item_obligations in obligations.values() for obligation in item_obligations]
     return result
 
