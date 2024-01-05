@@ -184,6 +184,17 @@ def get_item(id):
     return item.to_dict()
 
 
+@app.route("/item/<int:id>", methods=['PUT'])
+def update_item(id):
+    name = request.json.get('name')
+    returnable = bool(request.json.get('returnable'))
+    item = item_manager.get_by_id(id)
+    item.name = name
+    item.returnable = returnable
+    id = item_manager.update_item(item)
+    return {"id": id}, HTTPStatus.CREATED
+
+
 @app.route("/item/<int:id>", methods=['POST'])
 def add_stock(id):
     item = item_manager.get_by_id(id)

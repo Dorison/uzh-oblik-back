@@ -24,6 +24,11 @@ class ItemManager:
         self.db.session.commit()
         return item.id
 
+    def update_item(self, item: Item):
+        self.db.session.add(item)
+        self.db.session.commit()
+        return item.id
+
     def get_by_id(self, id):
         return self.db.get_or_404(Item, id)
 
