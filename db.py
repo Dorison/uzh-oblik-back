@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import String, Boolean, Integer, DateTime, Column, ForeignKey
+from sqlalchemy import String, Boolean, Integer, DateTime, Column, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship, attribute_keyed_dict
 from dataclasses import dataclass, asdict
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -37,6 +37,13 @@ class Item(db.Model):
 
     def to_dict(self):
         return asdict(self)
+
+
+class Shipment(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    date: Mapped[datetime] = mapped_column(DateTime)
+    count: Mapped[int] = mapped_column(Integer)
+    item_id = Column(Integer, ForeignKey(Item.id))
 
 
 @dataclass

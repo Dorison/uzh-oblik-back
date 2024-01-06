@@ -31,6 +31,10 @@ db.init_app(app)
 CORS(app)
 
 
+def none_is_now(date_str, format="%Y-%m-%d"):
+    return datetime.now() if date_str is None else datetime.strptime(date_str, format)
+
+
 class NonASCIIJSONEncoder(json.JSONEncoder):
     def __init__(self, **kwargs):
         kwargs['ensure_ascii'] = False
@@ -154,11 +158,10 @@ def get_serviceman_norms(id):
     return [norm.to_dict() for norm in norms]
 
 
-# отримати належності службовця
+# отримати належності службовця на дату
 @app.route("/serviceman/<int:id>/obligation", methods=['get'])
 def get_serviceman_obligations(id):
-    to_date_str = request.args.get("to")
-    to_date = datetime.now() if to_date_str is None else datetime.strptime(to_date_str, "%Y-%m-%d")
+    to_date = none_is_now(request.args.get("to"))
     serviceman = serviceman_manager.get_by_id(id)
     norms = norm_manager.get_potential_norms(serviceman)
     obligations = norm_manager.get_obligations(serviceman, norms, to_date)
@@ -199,15 +202,23 @@ def update_item(id):
 
 @app.route("/item/<int:id>", methods=['POST'])
 def add_stock(id):
+    date = none_is_now(request.args.get("date"))
     item = item_manager.get_by_id(id)
     # {"size": count}
-    item_manager.add_stock(item, request.json)
-    return {"id": id}, HTTPStatus.OK
+    shipment_id = item_manager.add_stock(item, request.json, date)
+    return {"id": shipment_id}, HTTPStatus.OK
 
 
 @app.route("/item", methods=['get'])
 def get_items():
     return [item.to_dict() for item in item_manager.get_all()]
+
+
+@app.route("/item/stock", methods=['get'])
+def get_stock():
+    from_date = request.args.get("from")
+    to_date = request.args.get("to")
+    return [dto.to_dict() for dto in item_manager.get_stock(from_date, to_date)]
 
 
 @app.route("/serviceman/<int:serviceman_id>/item/<int:item_id>", methods=['PUT'])
@@ -301,16 +312,6 @@ def get_norm(norm_id):
 def commit_norm(id):
     return {'id': id}, HTTPStatus.CREATED
 
-"""
-@app.route("/group/<int:group_id>/item", methods=['PUT'])
-def add_item(group_id):
-    item_id = request.json.get("item_id")
-    term = request.json.get("term")
-    quantity = request.json.get("quantity")
-    return {id: 42}
-"""
-
-
 @app.route("/logout")
 @login_required
 def logout():
@@ -383,9 +384,13 @@ def test0():
         print(ols)
         print(reqs)
 
+def test1():
+    with app.app_context():
+        print(item_manager.get_stock(datetime.strptime("2022-01-01", "%Y-%m-%d"), datetime.strptime("2024-01-01", "%Y-%m-%d")))
+
 if __name__ == '__main__':
     is_test = config("test", False, cast=bool)
     if is_test:
-        test0()
+        test1()
     else:
         app.run(host='0.0.0.0')
