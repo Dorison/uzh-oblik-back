@@ -209,6 +209,13 @@ def add_stock(id):
     return {"id": shipment_id}, HTTPStatus.OK
 
 
+@app.route("/item/<int:id>", methods=['PATCH'])
+def remove_size(id):
+    size_to_remove = request.json.get("size_to_remove")
+    item = item_manager.get_by_id(id)
+    return {"id": item_manager.remove_stock(item, size_to_remove)}
+
+
 @app.route("/item", methods=['get'])
 def get_items():
     return [item.to_dict() for item in item_manager.get_all()]

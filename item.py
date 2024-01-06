@@ -59,6 +59,13 @@ class ItemManager:
         self.db.session.commit()
         return shipment.id
 
+    def remove_stock(self, item: Item, size_to_remove:str):
+        sku = item.sizes[size_to_remove]
+        db.session.delete(sku)
+        id = sku.id
+        db.session.commit()
+        return id
+
     def get_requirements(self, obligations: List[Dict]) -> List[Requirement]:
         reqs: Dict[int, Dict[str, int]] = {}
         items: Dict[int, Item] = {}
