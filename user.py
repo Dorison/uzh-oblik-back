@@ -15,7 +15,7 @@ class User:
         return self.id
 
     def __init__(self, db_user: DbUser):
-        self.is_authenticated = False
+        self.is_authenticated = True
         self.is_active = True
         self.is_anonymous = False
         self.id = db_user.id
