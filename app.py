@@ -62,7 +62,7 @@ def authenticate():
     password = request.json.get('password')
     user = user_manager.get_by_id(username)
     if authenticate_user(user, password):
-        success = login_user(user, remember=True)
+        login_user(user, remember=True)
         return {'username': username, 'password': password}, HTTPStatus.FOUND
     else:
         abort(HTTPStatus.UNAUTHORIZED)
@@ -82,7 +82,7 @@ def create_user():
     return {'username': username, 'password': password, "is_admin": is_admin}, HTTPStatus.CREATED
 
 
-@login_required
+# @login_required
 def _create_serviceman(request, date):
     name = request.json.get('name')
     surname = request.json.get('surname')
@@ -148,7 +148,7 @@ def terminate(id):
 
 
 @app.route("/serviceman/<int:id>", methods=['get'])
-@login_required
+# @login_required
 def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
