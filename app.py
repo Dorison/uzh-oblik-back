@@ -146,8 +146,9 @@ def terminate(id):
     serviceman_manager.terminate(serviceman, date)
     return {"id": id}
 
-@login_required
+
 @app.route("/serviceman/<int:id>", methods=['get'])
+@login_required
 def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
     return serviceman.to_dict()
