@@ -16,7 +16,7 @@ class User:
 
     def __init__(self, db_user: DbUser):
         self.is_authenticated = False
-        self.is_active = False
+        self.is_active = True
         self.is_anonymous = False
         self.id = db_user.id
         self.hash = db_user.hash

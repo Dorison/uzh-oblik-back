@@ -22,10 +22,14 @@ def load_user(user_id):
 
 app = Flask(__name__)
 app.secret_key = config("secret_key", "009e5686fbe6267253fa2c0acfae50f6c4b1e0ae3e12184b101d461f32e49b7e")
-login_manager.init_app(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://postgres:{config('db_password')}@{config('db_host', '3.71.13.232')}:{config('db_port', '5432')}/uzh"
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
 app.config['JSON_AS_ASCII'] = False
+app.config['REMEMBER_COOKIE_NAME'] = 'secret'
+app.config['REMEMBER_COOKIE_HTTPONLY'] = False
+login_manager.init_app(app)
+login_manager.session_protection = None
+
 db.init_app(app)
 # TODO fix security issue
 CORS(app)
@@ -58,8 +62,8 @@ def authenticate():
     password = request.json.get('password')
     user = user_manager.get_by_id(username)
     if authenticate_user(user, password):
-        login_user(user, remember=True)
-        return {'username': username, 'password': password}, HTTPStatus.FOUND
+        success = login_user(user, remember=True)
+        return {'username': username, 'password': password, "success": success}
     else:
         abort(HTTPStatus.UNAUTHORIZED)
 
@@ -78,7 +82,7 @@ def create_user():
     return {'username': username, 'password': password, "is_admin": is_admin}, HTTPStatus.CREATED
 
 
-# @login_required
+@login_required
 def _create_serviceman(request, date):
     name = request.json.get('name')
     surname = request.json.get('surname')
@@ -142,7 +146,7 @@ def terminate(id):
     serviceman_manager.terminate(serviceman, date)
     return {"id": id}
 
-
+@login_required
 @app.route("/serviceman/<int:id>", methods=['get'])
 def get_serviceman(id):
     serviceman = serviceman_manager.get_by_id(id)
