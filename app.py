@@ -63,7 +63,7 @@ def authenticate():
     user = user_manager.get_by_id(username)
     if authenticate_user(user, password):
         success = login_user(user, remember=True)
-        return {'username': username, 'password': password, "success": success}
+        return {'username': username, 'password': password}, HTTPStatus.FOUND
     else:
         abort(HTTPStatus.UNAUTHORIZED)
 
