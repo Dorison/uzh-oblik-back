@@ -86,7 +86,7 @@ class ItemManager:
 
     def get_stock(self, from_date, to_date):
         stock_querry = db.select(Item.name, SKU.item_id, func.sum(SKU.count)).join(Item.sizes).group_by(SKU.item_id, Item.name)
-        shipment_querry = db.select(Shipment.item_id, Shipment.date<to_date, func.sum(Shipment.count)).where(Shipment.date>from_date)\
+        shipment_querry = db.select(Shipment.item_id, func.sum(Shipment.count), Shipment.date<to_date).where(Shipment.date>from_date)\
             .group_by(Shipment.item_id, Shipment.date < to_date)
         issues_querry = db.select(Issue.item_id, func.sum(Issue.count), Issue.granted< to_date).where(Issue.granted > from_date)\
             .group_by(Issue.item_id, Issue.granted < to_date)
