@@ -171,6 +171,7 @@ class ServicemanObligation:
     count: int
     date: datetime
     term: int
+    norm_id: int
 
     def to_dict(self):
         d = asdict(self)

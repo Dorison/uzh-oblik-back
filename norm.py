@@ -122,14 +122,14 @@ class NormManager:
                                 if item.id not in obligations:
                                     obligations[item.id] = [
                                         ServicemanObligation(item, get_size(item.id), obligation.count, datetime.now(),
-                                                             obligation.term)]
+                                                             obligation.term, norm.id)]
                         else:
                             time = start
                             if item.id in obligations:
                                 time = max(time, adjust_for_paternal_leave_increment(serviceman, obligations[item.id][-1].date, timedelta(days=obligation.term), cutoff))
                             while time <= end:
                                 serviceman_obligation = ServicemanObligation(item, get_size(item.id), obligation.count, time.replace(microsecond=0),
-                                                                             obligation.term)
+                                                                             obligation.term, norm.id)
                                 if item.id in obligations:
                                     obligations[item.id].append(serviceman_obligation)
                                 else:

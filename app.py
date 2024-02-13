@@ -400,9 +400,25 @@ def test1():
     with app.app_context():
         print(item_manager.get_stock(datetime.strptime("2022-01-01", "%Y-%m-%d"), datetime.strptime("2024-01-01", "%Y-%m-%d")))
 
+def test2():
+    with app.app_context():
+        serviceman = serviceman_manager.get_by_id(70)
+        norms = norm_manager.get_potential_norms(serviceman)
+        to_date =datetime.strptime("2034-01-01", "%Y-%m-%d")
+        norms = list(norms)
+        obligations = norm_manager.get_obligations(serviceman, norms, to_date)
+        print(norms)
+        for norm in norms:
+            for obligation in norm.obligations:
+                item = obligation.item
+                if item.id == 45:
+                    print(obligation)
+
+        print(obligations[45])
+
 if __name__ == '__main__':
     is_test = config("test", False, cast=bool)
     if is_test:
-        test1()
+        test2()
     else:
         app.run(host='0.0.0.0')
