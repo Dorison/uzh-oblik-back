@@ -402,7 +402,7 @@ def test1():
 
 def test2():
     with app.app_context():
-        serviceman = serviceman_manager.get_by_id(70)
+        serviceman = serviceman_manager.get_by_id(69)
         norms = norm_manager.get_potential_norms(serviceman)
         to_date =datetime.strptime("2034-01-01", "%Y-%m-%d")
         norms = list(norms)
@@ -415,6 +415,7 @@ def test2():
                     print(obligation)
 
         print(obligations[45])
+        print(serviceman)
 
 if __name__ == '__main__':
     is_test = config("test", False, cast=bool)
